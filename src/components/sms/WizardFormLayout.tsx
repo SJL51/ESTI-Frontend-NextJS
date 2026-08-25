@@ -1,9 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import type { Control } from "react-hook-form"
+import { Controller, type Control } from "react-hook-form"
 import { DynamicField } from "@/components/sms/DynamicField"
 import { PhotoUploadField } from "@/components/sms/PhotoUploadField"
+import { ChildTableGrid } from "@/components/sms/ChildTableGrid"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
@@ -65,20 +66,22 @@ export function WizardFormLayout({
   const isFirst = activeStep === 0
   const isLast = activeStep === layout.steps.length - 1
   const hasColumns = !!step.columns && step.columns.length > 0
-  const isComingSoon = !hasColumns && step.fieldnames.length === 0
+  const isComingSoon = !hasColumns && !step.childTable && step.fieldnames.length === 0
 
   const mainColumn = step.columns?.find((c) => c.span === "main")
   const sidebarColumn = step.columns?.find((c) => c.span === "sidebar")
 
   return (
     <div className="grid gap-6">
-      {/* Breadcrumb — display-only, no click-to-jump by design */}
+      {/* Breadcrumb — click a step to jump directly to it */}
       <div className="flex items-center flex-wrap gap-x-2 gap-y-1 text-sm">
         {layout.steps.map((s, i) => (
           <span key={s.key} className="flex items-center gap-2">
-            <span
+            <button
+              type="button"
+              onClick={() => setActiveStep(i)}
               className={cn(
-                "font-medium",
+                "font-medium hover:underline cursor-pointer",
                 i === activeStep
                   ? "text-foreground"
                   : i < activeStep
@@ -87,7 +90,7 @@ export function WizardFormLayout({
               )}
             >
               {s.label}
-            </span>
+            </button>
             {i < layout.steps.length - 1 && (
               <span className="text-muted-foreground">/</span>
             )}
@@ -103,6 +106,18 @@ export function WizardFormLayout({
             {step.note ?? "This step needs its own fields/DocType before it can be filled in here."}
           </p>
         </div>
+      ) : step.childTable ? (
+        <Controller
+          control={control}
+          name={step.childTable.fieldname}
+          render={({ field }) => (
+            <ChildTableGrid
+              spec={step.childTable!}
+              rows={(field.value as Array<Record<string, unknown>>) ?? []}
+              onChange={field.onChange}
+            />
+          )}
+        />
       ) : hasColumns ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {mainColumn && (
@@ -129,22 +144,6 @@ export function WizardFormLayout({
           })}
         </div>
       )}
-
-      <div className="flex items-center justify-between pt-2">
-        <Button
-          type="button"
-          variant="outline"
-          disabled={isFirst}
-          onClick={() => setActiveStep((s) => s - 1)}
-        >
-          Back
-        </Button>
-        {!isLast && (
-          <Button type="button" onClick={() => setActiveStep((s) => s + 1)}>
-            Next
-          </Button>
-        )}
-      </div>
     </div>
   )
 }

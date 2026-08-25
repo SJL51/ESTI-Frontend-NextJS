@@ -19,6 +19,7 @@ export type FieldType =
   | "Link"
   | "Select"
   | "Attach Image"
+  | "Phone"
 
 export interface FieldSpec {
   fieldname: string
@@ -86,6 +87,8 @@ export interface WizardStep {
   columns?: WizardStepColumn[]
   /** Shown instead of fields when fieldnames is empty and columns is unset. */
   note?: string
+  /** Renders an editable Frappe child-table grid for this step instead of flat fields. */
+  childTable?: ChildTableSpec
 }
 
 export interface WizardLayout {

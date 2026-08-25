@@ -4,6 +4,13 @@ import type { ChildTableSpec } from "@/lib/forms/types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
   Table,
   TableBody,
   TableCell,
@@ -53,10 +60,31 @@ export function ChildTableGrid({
               <TableRow key={i}>
                 {spec.columns.map((c) => (
                   <TableCell key={c.fieldname}>
-                    <Input
-                      value={String(row[c.fieldname] ?? "")}
-                      onChange={(e) => updateCell(i, c.fieldname, e.target.value)}
-                    />
+                    {c.fieldtype === "Select" ? (
+                      <Select
+                        value={String(row[c.fieldname] ?? "")}
+                        onValueChange={(value) => updateCell(i, c.fieldname, value ?? "")}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {(c.options ?? "")
+                            .split("\n")
+                            .filter(Boolean)
+                            .map((opt) => (
+                              <SelectItem key={opt} value={opt}>
+                                {opt}
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <Input
+                        value={String(row[c.fieldname] ?? "")}
+                        onChange={(e) => updateCell(i, c.fieldname, e.target.value)}
+                      />
+                    )}
                   </TableCell>
                 ))}
                 <TableCell>

@@ -112,12 +112,26 @@ export function MasterDetailScreen({
     else setDialogOpen(true)
   }
 
-  function openRow(row: Record<string, unknown>) {
+  async function openRow(row: Record<string, unknown>) {
     setEditing(row)
     form.reset(row)
     setMode("view")
     if (isInlineMode) setFormOpen(true)
     else setDialogOpen(true)
+    // The list endpoint never returns child-table rows (e.g. Education) —
+    // only a single-document fetch does. Re-fetch and refresh once it
+    // lands; the list row is shown immediately so opening still feels instant.
+    try {
+      const full = await frappe.getDoc<Record<string, unknown>>(
+        spec.doctype,
+        String(row.name)
+      )
+      setEditing(full)
+      form.reset(full)
+    } catch {
+      // Fall back silently to the list row's data — everything except
+      // child-table fields is already correct from it.
+    }
   }
 
   function startEdit() {
@@ -132,6 +146,16 @@ export function MasterDetailScreen({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit((values) => saveMutation.mutate(values))}
+        onKeyDown={(e) => {
+          // Enter submits the nearest <form> by default in every browser —
+          // fine for a single-field dialog, but in a multi-step wizard it
+          // saves (and closes) the record the moment someone hits Enter in
+          // any text field. Block it except in a <textarea>, where Enter is
+          // expected to insert a newline rather than submit.
+          if (e.key === "Enter" && (e.target as HTMLElement).tagName !== "TEXTAREA") {
+            e.preventDefault()
+          }
+        }}
         className="grid gap-4"
       >
         {wizard ? (
@@ -153,6 +177,7 @@ export function MasterDetailScreen({
       <RecordDetailView
         spec={spec}
         row={editing}
+        wizard={wizard}
         onEdit={startEdit}
         onClose={closeForm}
         onDelete={requestDelete}

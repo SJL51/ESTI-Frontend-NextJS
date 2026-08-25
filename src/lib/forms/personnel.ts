@@ -17,7 +17,7 @@ export const employeeSpec: FormSpec = {
         { fieldname: "religion", label: "Religion", fieldtype: "Data" },
         {
             fieldname: "marital_status", label: "Marital Status", fieldtype: "Select", options: "Single\nMarried\nDivorced\nWidowed\nSeparated" },
-        { fieldname: "contact_number", label: "Contact Number", fieldtype: "Int" },
+        { fieldname: "contact_number", label: "Contact Number", fieldtype: "Phone" },
         { fieldname: "nationality", label: "Nationality", fieldtype: "Select", options: "Filipino\nAmerican" },
         { fieldname: "birthplace", label: "Birthplace", fieldtype: "Data" },
         { fieldname: "mailing_address", label: "Mailing Address", fieldtype: "Data" },
@@ -25,8 +25,8 @@ export const employeeSpec: FormSpec = {
         { fieldname: "date_hired", label: "Date Hired", fieldtype: "Date" },
         { fieldname: "department", label: "Department", fieldtype: "Select", options: "ADMINISTRATION DEPARTMENT\nCOMPUTER SCIENCE DEPARTMENT\nELECTRONICS DEPARTMENT\nFinance\nGENERAL SERVICES DEPARTMENT\nHIGH SCHOOL DEPARTMENT\nHOTEL&RESTAURANT DEPARTMENT\nHuman Resources\nMARINE DEPT.\nProperty Custodian\nRegistrar\nSCIENCE DEPARTMENT\nTOURISM DEPARTMENT", inListView: true },
         // Payroll Info
-        // { fieldname: "", label: "", fieldtype: "Int" },
-        // { fieldname: "", label: "", fieldtype: "Int" },
+        { fieldname: "emergency_contacts", label: "Emergency Contacts", fieldtype: "Small Text" },
+        { fieldname: "family_dependents", label: "Family/Dependents", fieldtype: "Small Text" },
     ],
 }
 
@@ -76,14 +76,22 @@ export const employeeWizardLayout: WizardLayout = {
         {
             key: "primary_contacts",
             label: "Primary Contacts",
-            fieldnames: [],
-            note: "Emergency contact and dependent details — needs its own child-table DocType (an employee can have multiple contacts/dependents).",
+            fieldnames: ["emergency_contacts", "family_dependents" ],
         },
         {
             key: "education",
             label: "Education",
             fieldnames: [],
-            note: "Academic background and degree history — needs its own child-table DocType (an employee can have multiple degrees).",
+            childTable: {
+                fieldname: "education",
+                doctype: "SMS Personnel Education",
+                columns: [
+                    { fieldname: "level", label: "Level", fieldtype: "Select", options: "Elementary\nSecondary\nTertiary\nGraduate School" },
+                    { fieldname: "school", label: "School", fieldtype: "Data" },
+                    { fieldname: "year", label: "Year", fieldtype: "Data" },
+                    { fieldname: "degree", label: "Degree", fieldtype: "Data" },
+                ],
+            },
         },
         {
             key: "skills_seminars",
