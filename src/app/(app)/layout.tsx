@@ -20,6 +20,7 @@ import { useAuth } from "@/providers/AuthProvider"
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -141,7 +142,6 @@ export default function AppLayout({ children }: { children: ReactNode }) {
               className="flex w-full items-center justify-between rounded-md p-2 hover:bg-accent hover:text-accent-foreground text-left outline-none transition-colors"
             >
               <div className="flex items-center gap-3 overflow-hidden">
-                {/* Fallback Custom Avatar (No external shadcn avatar import required) */}
                 {userAvatar ? (
                   <img
                     src={userAvatar}
@@ -162,12 +162,14 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={logout} className="text-destructive focus:text-destructive cursor-pointer">
-                <LogOut className="mr-2 h-4 w-4" />
-                <span>Log out</span>
-              </DropdownMenuItem>
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={logout} className="text-destructive focus:text-destructive cursor-pointer">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Log out</span>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

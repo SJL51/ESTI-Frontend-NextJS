@@ -15,7 +15,8 @@ export const employeeSpec: FormSpec = {
         { fieldname: "number_of_dependents", label: "Number of Dependents", fieldtype: "Int" },
         { fieldname: "profile", label: "Insert Profile", fieldtype: "Attach Image" },
         { fieldname: "religion", label: "Religion", fieldtype: "Data" },
-        { fieldname: "marital_status", label: "Marital Status", fieldtype: "Data" },
+        {
+            fieldname: "marital_status", label: "Marital Status", fieldtype: "Select", options: "Single\nMarried\nDivorced\nWidowed\nSeparated" },
         { fieldname: "contact_number", label: "Contact Number", fieldtype: "Int" },
         { fieldname: "nationality", label: "Nationality", fieldtype: "Select", options: "Filipino\nAmerican" },
         { fieldname: "birthplace", label: "Birthplace", fieldtype: "Data" },
@@ -23,6 +24,9 @@ export const employeeSpec: FormSpec = {
         { fieldname: "employee_status", label: "Employee Status", fieldtype: "Select", options: "Contractual\nPart Timer\nProbationary\nRegular", inListView: true },
         { fieldname: "date_hired", label: "Date Hired", fieldtype: "Date" },
         { fieldname: "department", label: "Department", fieldtype: "Select", options: "ADMINISTRATION DEPARTMENT\nCOMPUTER SCIENCE DEPARTMENT\nELECTRONICS DEPARTMENT\nFinance\nGENERAL SERVICES DEPARTMENT\nHIGH SCHOOL DEPARTMENT\nHOTEL&RESTAURANT DEPARTMENT\nHuman Resources\nMARINE DEPT.\nProperty Custodian\nRegistrar\nSCIENCE DEPARTMENT\nTOURISM DEPARTMENT", inListView: true },
+        // Payroll Info
+        // { fieldname: "", label: "", fieldtype: "Int" },
+        // { fieldname: "", label: "", fieldtype: "Int" },
     ],
 }
 

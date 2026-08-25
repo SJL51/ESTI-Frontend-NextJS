@@ -26,6 +26,7 @@ import {
 import { Form } from "@/components/ui/form"
 import { DynamicField } from "@/components/sms/DynamicField"
 import { WizardFormLayout } from "@/components/sms/WizardFormLayout"
+import { RecordDetailView } from "@/components/sms/RecordDetailView"
 
 /**
  * The ~115 legacy Master/Detail screens (blueprint §5.1): a list view plus an
@@ -34,6 +35,11 @@ import { WizardFormLayout } from "@/components/sms/WizardFormLayout"
  * Render modes (priority order): wizard (inline, step-by-step) > flat dialog
  * (default, unchanged). Passing no `wizard` prop keeps a screen's existing
  * behavior completely unchanged.
+ *
+ * Existing rows open read-only first (RecordDetailView) — editing or
+ * deleting an existing record requires pressing the corresponding button
+ * explicitly. New records skip straight to the editable form since there's
+ * nothing to view yet.
  */
 export function MasterDetailScreen({
   spec,
@@ -46,6 +52,8 @@ export function MasterDetailScreen({
   const [editing, setEditing] = useState<Record<string, unknown> | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [formOpen, setFormOpen] = useState(false)
+  const [mode, setMode] = useState<"view" | "edit">("edit")
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
   const isInlineMode = !!wizard
 
   const listColumns = spec.fields.filter((f) => f.inListView)
@@ -77,6 +85,20 @@ export function MasterDetailScreen({
     onError: (error) => toast.error(`Could not save ${spec.title}: ${getErrorMessage(error)}`),
   })
 
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      if (!editing?.name) throw new Error("Nothing selected to delete")
+      return frappe.deleteDoc(spec.doctype, String(editing.name))
+    },
+    onSuccess: () => {
+      toast.success(`${spec.title} deleted`)
+      queryClient.invalidateQueries({ queryKey: [spec.doctype, "list"] })
+      setConfirmDeleteOpen(false)
+      closeForm()
+    },
+    onError: (error) => toast.error(`Could not delete ${spec.title}: ${getErrorMessage(error)}`),
+  })
+
   function closeForm() {
     setDialogOpen(false)
     setFormOpen(false)
@@ -85,6 +107,7 @@ export function MasterDetailScreen({
   function openNew() {
     setEditing(null)
     form.reset({})
+    setMode("edit")
     if (isInlineMode) setFormOpen(true)
     else setDialogOpen(true)
   }
@@ -92,8 +115,17 @@ export function MasterDetailScreen({
   function openRow(row: Record<string, unknown>) {
     setEditing(row)
     form.reset(row)
+    setMode("view")
     if (isInlineMode) setFormOpen(true)
     else setDialogOpen(true)
+  }
+
+  function startEdit() {
+    setMode("edit")
+  }
+
+  function requestDelete() {
+    setConfirmDeleteOpen(true)
   }
 
   const formBody = (
@@ -116,19 +148,61 @@ export function MasterDetailScreen({
     </Form>
   )
 
+  const panelBody =
+    mode === "view" && editing ? (
+      <RecordDetailView
+        spec={spec}
+        row={editing}
+        onEdit={startEdit}
+        onClose={closeForm}
+        onDelete={requestDelete}
+      />
+    ) : (
+      formBody
+    )
+
+  function panelTitle() {
+    if (mode === "view") return spec.title
+    return editing ? `Edit ${spec.title}` : `New ${spec.title}`
+  }
+
+  const confirmDeleteDialog = (
+    <Dialog open={confirmDeleteOpen} onOpenChange={setConfirmDeleteOpen}>
+      <DialogContent className="max-w-sm">
+        <DialogHeader>
+          <DialogTitle>Delete {spec.title}?</DialogTitle>
+        </DialogHeader>
+        <p className="text-sm text-muted-foreground">
+          This can&apos;t be undone. This will permanently remove this record.
+        </p>
+        <div className="flex justify-end gap-2 pt-2">
+          <Button variant="outline" onClick={() => setConfirmDeleteOpen(false)}>
+            Cancel
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={() => deleteMutation.mutate()}
+            disabled={deleteMutation.isPending}
+          >
+            {deleteMutation.isPending ? "Deleting…" : "Delete"}
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+
   // Inline mode: list view is fully replaced while formOpen is true.
   if (isInlineMode && formOpen) {
     return (
       <div className="grid gap-4">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold">
-            {editing ? `Edit ${spec.title}` : `New ${spec.title}`}
-          </h1>
+          <h1 className="text-2xl font-semibold">{panelTitle()}</h1>
           <Button variant="outline" onClick={closeForm}>
             Back to list
           </Button>
         </div>
-        <div className="rounded-md border p-6">{formBody}</div>
+        <div className="rounded-md border p-6">{panelBody}</div>
+        {confirmDeleteDialog}
       </div>
     )
   }
@@ -175,14 +249,13 @@ export function MasterDetailScreen({
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogContent className="max-h-[85vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>
-                {editing ? `Edit ${spec.title}` : `New ${spec.title}`}
-              </DialogTitle>
+              <DialogTitle>{panelTitle()}</DialogTitle>
             </DialogHeader>
-            {formBody}
+            {panelBody}
           </DialogContent>
         </Dialog>
       )}
+      {confirmDeleteDialog}
     </div>
   )
 }

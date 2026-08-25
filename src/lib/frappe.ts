@@ -117,6 +117,27 @@ export const frappe = {
     )
   },
 
+  /**
+   * POST /api/method/upload_file — uploads a file standalone (not attached
+   * to a doctype/docname at upload time, so this works the same whether the
+   * record is new or already saved). Returns a permanent file_url to store
+   * on the relevant "Attach Image"/"Attach" field before saving the doc.
+   * Files are uploaded public by default (is_private=0) — fine for profile
+   * photos; pass isPrivate: true for anything that should be access-gated.
+   */
+  async uploadFile(
+    file: File,
+    opts: { isPrivate?: boolean } = {}
+  ): Promise<{ file_url: string; name: string }> {
+    const formData = new FormData()
+    formData.append("file", file)
+    formData.append("is_private", opts.isPrivate ? "1" : "0")
+    const { data } = await frappeClient.post("/api/method/upload_file", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+    return data.message as { file_url: string; name: string }
+  },
+
   /** Whitelisted RPC */
   async call<T = unknown>(
     method: string,
