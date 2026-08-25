@@ -18,6 +18,7 @@ export type FieldType =
   | "Check"
   | "Link"
   | "Select"
+  | "Attach Image"
 
 export interface FieldSpec {
   fieldname: string
@@ -62,4 +63,31 @@ export interface ReportSpec {
   title: string
   filters: FieldSpec[]
   columns: Array<{ fieldname: string; label: string; width?: number }>
+}
+
+export interface WizardStepSection {
+  title?: string
+  fieldnames: string[]
+  columns?: 1 | 2 | 3 | 4
+}
+
+export interface WizardStepColumn {
+  /** "main" renders wide (2/3), "sidebar" renders narrow (1/3). */
+  span: "main" | "sidebar"
+  sections: WizardStepSection[]
+}
+
+export interface WizardStep {
+  key: string
+  label: string
+  /** Flat field list — used when `columns` is not set (simple steps). */
+  fieldnames: string[]
+  /** Sectioned two-column layout (main + sidebar) — overrides fieldnames when present. */
+  columns?: WizardStepColumn[]
+  /** Shown instead of fields when fieldnames is empty and columns is unset. */
+  note?: string
+}
+
+export interface WizardLayout {
+  steps: WizardStep[]
 }

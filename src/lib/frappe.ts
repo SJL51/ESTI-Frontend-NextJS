@@ -1,42 +1,28 @@
 /**
  * Thin client over the Frappe REST/RPC API.
- *
- * Three concerns, per the migration blueprint's Frontend Architecture (§5.4):
- *  1. CRUD against `/api/resource/<DocType>` for Master/Detail screens.
- *  2. Whitelisted RPC against `/api/method/campus_erp.api.<module>.<fn>` for
- *     every business rule (enrollment, assessment, GL posting, payroll, fines) —
- *     the frontend never re-implements these, it only calls them.
- *  3. (Phase 2+) Realtime via Frappe's socketio channel.
- *
- * In development, Next.js proxies /api/* to the bench (see next.config.ts) so
- * the Frappe session cookie stays same-origin.
  */
 import axios, { type AxiosInstance } from "axios"
 
 const frappeClient: AxiosInstance = axios.create({
   baseURL: "/",
   withCredentials: true,
-  headers: {
-    "X-Frappe-CSRF-Token": "",
-  },
 })
 
-// Frappe issues a CSRF token on the logged-in session (frappe.csrf_token via
-// boot info). Once the auth provider fetches boot info, it calls this to make
-// every subsequent write request valid.
+// Issue #9 Fix: Use a module-level variable and request interceptor so 
+// the CSRF token reliably attaches to every subsequent request.
+let csrfToken: string | undefined
+
 export function setCSRFToken(token: string | undefined) {
-  if (token) {
-    frappeClient.defaults.headers.common["X-Frappe-CSRF-Token"] = token
-  }
+  csrfToken = token
 }
 
-/**
- * Frappe surfaces thrown business-rule errors (frappe.throw) as a 417/403/500
- * response carrying `_server_messages` (a JSON-encoded array of JSON-encoded
- * {message,...} objects) rather than a flat `message` string — this unwraps
- * that so callers can show the real reason instead of "Request failed with
- * status code 417".
- */
+frappeClient.interceptors.request.use((config) => {
+  if (csrfToken) {
+    config.headers["X-Frappe-CSRF-Token"] = csrfToken
+  }
+  return config
+})
+
 export function getErrorMessage(error: unknown): string {
   if (axios.isAxiosError(error)) {
     const data = error.response?.data as
@@ -131,11 +117,7 @@ export const frappe = {
     )
   },
 
-  /**
-   * Whitelisted RPC — every business rule identified in the blueprint's
-   * Backend Architecture (§4.3) lives behind campus_erp.api.<module>.<fn>,
-   * never re-implemented client-side.
-   */
+  /** Whitelisted RPC */
   async call<T = unknown>(
     method: string,
     args: Record<string, unknown> = {}
@@ -155,13 +137,17 @@ export const frappe = {
 
   /** campus_erp.api.auth.me() — roles + visible module list for the sidebar. */
   async me() {
-    return frappe.call<{
+    // Issue #8 Fix: Switch from POST to GET to avoid triggering CSRF checks on page refresh
+    const { data } = await frappeClient.get(
+      "/api/method/campus_erp.api.auth.me"
+    )
+    return data.message as {
       user: string
       full_name: string
       roles: string[]
       modules: string[]
       csrf_token: string
-    }>("campus_erp.api.auth.me")
+    }
   },
 }
 
