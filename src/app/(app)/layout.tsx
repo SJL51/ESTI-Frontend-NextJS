@@ -102,7 +102,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           </div>
         </div>
 
-        <div className="my-3 h-[1px] w-full bg-gradient-to-r from-transparent via-border to-transparent" />
+        <div className="my-3 h-px w-full bg-linear-to-r from-transparent via-border to-transparent" />
 
         {/* Navigation Section */}
         <nav className="flex flex-1 flex-col gap-6 overflow-y-auto px-1 py-1">
