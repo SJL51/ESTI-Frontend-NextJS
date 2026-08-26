@@ -3,6 +3,7 @@
 import type { ChildTableSpec } from "@/lib/forms/types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { DatePickerField } from "@/components/sms/DatePickerField"
 import {
   Select,
   SelectContent,
@@ -45,6 +46,11 @@ export function ChildTableGrid({
 
   return (
     <div className="grid gap-2">
+      {spec.title && (
+        <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          {spec.title}
+        </h2>
+      )}
       <div className="overflow-x-auto rounded-md border">
         <Table>
           <TableHeader>
@@ -79,6 +85,11 @@ export function ChildTableGrid({
                             ))}
                         </SelectContent>
                       </Select>
+                    ) : c.fieldtype === "Date" ? (
+                      <DatePickerField
+                        value={String(row[c.fieldname] ?? "")}
+                        onChange={(value) => updateCell(i, c.fieldname, value)}
+                      />
                     ) : (
                       <Input
                         value={String(row[c.fieldname] ?? "")}

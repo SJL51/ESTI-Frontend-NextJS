@@ -5,6 +5,12 @@ import { User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog"
+import {
     Table,
     TableBody,
     TableCell,
@@ -22,11 +28,17 @@ function ReadOnlyChildTable({
     spec: ChildTableSpec
     rows: Array<Record<string, unknown>>
 }) {
-    if (!rows.length) {
-        return <p className="text-sm text-muted-foreground">No records.</p>
-    }
     return (
-        <div className="overflow-x-auto rounded-md border">
+        <div className="space-y-2">
+            {spec.title && (
+                <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    {spec.title}
+                </h2>
+            )}
+            {!rows.length ? (
+                <p className="text-sm text-muted-foreground">No records.</p>
+            ) : (
+                <div className="overflow-x-auto rounded-md border">
             <Table>
                 <TableHeader>
                     <TableRow>
@@ -39,7 +51,7 @@ function ReadOnlyChildTable({
                     {rows.map((row, i) => (
                         <TableRow key={i}>
                             {spec.columns.map((c) => (
-                                <TableCell key={c.fieldname}>
+                                <TableCell key={c.fieldname} className="max-w-xs whitespace-normal wrap-break-word align-top">
                                     {String(row[c.fieldname] ?? "—")}
                                 </TableCell>
                             ))}
@@ -47,6 +59,8 @@ function ReadOnlyChildTable({
                     ))}
                 </TableBody>
             </Table>
+                </div>
+            )}
         </div>
     )
 }
@@ -102,6 +116,7 @@ export function RecordDetailView({
     onDelete?: () => void
 }) {
     const [activeStep, setActiveStep] = useState(0)
+    const [dialogOpen, setDialogOpen] = useState(false)
 
     // Reset to the first step whenever a different record is opened.
     useEffect(() => {
@@ -157,7 +172,7 @@ export function RecordDetailView({
     const isFirst = activeStep === 0
     const isLast = activeStep === wizard.steps.length - 1
     const hasColumns = !!step.columns && step.columns.length > 0
-    const isComingSoon = !hasColumns && !step.childTable && step.fieldnames.length === 0
+    const isComingSoon = !hasColumns && !step.childTable && !step.dialog && step.fieldnames.length === 0
 
     const mainColumn = step.columns?.find((c) => c.span === "main")
     const sidebarColumn = step.columns?.find((c) => c.span === "sidebar")
@@ -176,11 +191,6 @@ export function RecordDetailView({
                 {step.note ?? "This step needs its own fields/DocType before it can be filled in here."}
             </p>
         </div>
-    ) : step.childTable ? (
-        <ReadOnlyChildTable
-            spec={step.childTable}
-            rows={(row[step.childTable.fieldname] as Array<Record<string, unknown>>) ?? []}
-        />
     ) : hasColumns ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {mainColumn && (
@@ -237,10 +247,21 @@ export function RecordDetailView({
             )}
         </div>
     ) : (
-        <FieldGrid
-            fields={step.fieldnames.map((fn) => byName.get(fn)).filter((f): f is FieldSpec => !!f)}
-            row={row}
-        />
+        <div className="space-y-6">
+            {step.childTable && (
+                <ReadOnlyChildTable
+                    spec={step.childTable}
+                    rows={(row[step.childTable.fieldname] as Array<Record<string, unknown>>) ?? []}
+                />
+            )}
+            {step.fieldnames.length > 0 && (
+                <FieldGrid
+                    fields={step.fieldnames.map((fn) => byName.get(fn)).filter((f): f is FieldSpec => !!f)}
+                    row={row}
+                    columns={step.fieldColumns}
+                />
+            )}
+        </div>
     )
 
     return (
@@ -269,6 +290,41 @@ export function RecordDetailView({
             <Separator />
 
             {stepContent}
+
+            {step.dialog && (
+                <div>
+                    <Button type="button" variant="outline" onClick={() => setDialogOpen(true)}>
+                        {step.dialog.buttonLabel}
+                    </Button>
+                    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                        <DialogContent className="max-w-sm">
+                            <DialogHeader>
+                                <DialogTitle>{step.dialog.title ?? step.dialog.buttonLabel}</DialogTitle>
+                            </DialogHeader>
+                            <div className="grid gap-3">
+                                {step.dialog.childTable && (
+                                    <ReadOnlyChildTable
+                                        spec={step.dialog.childTable}
+                                        rows={(row[step.dialog.childTable.fieldname] as Array<Record<string, unknown>>) ?? []}
+                                    />
+                                )}
+                                {(step.dialog.fieldnames ?? []).length > 0 && (
+                                    <FieldGrid
+                                        fields={(step.dialog.fieldnames ?? []).map((fn) => byName.get(fn)).filter((f): f is FieldSpec => !!f)}
+                                        row={row}
+                                        columns={1}
+                                    />
+                                )}
+                            </div>
+                            <div className="flex justify-end pt-2">
+                                <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
+                                    Close
+                                </Button>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
+                </div>
+            )}
 
             {actionButtons}
         </div>

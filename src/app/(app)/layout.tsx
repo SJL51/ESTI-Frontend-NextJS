@@ -14,7 +14,6 @@ import {
   UserCheck,
   Wallet,
   ChevronsUpDown,
-  Sparkles,
 } from "lucide-react"
 
 import { useAuth } from "@/providers/AuthProvider"
@@ -51,7 +50,6 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
 
-  // Safely extract properties if they exist on user object
   const userObj = user as Record<string, unknown> | null
   const userAvatar = typeof userObj?.avatar_url === "string" ? userObj.avatar_url : undefined
   const userEmail = typeof userObj?.email === "string" ? userObj.email : undefined
@@ -87,9 +85,11 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   const filteredModules = NAV_ITEMS.filter((item) => hasModule(item.module))
 
   return (
-    <div className="flex min-h-screen w-full bg-slate-50/50 dark:bg-zinc-950">
-      {/* Floating Modern Sidebar Container */}
-      <aside className="my-3 ml-3 flex w-64 shrink-0 flex-col rounded-2xl border border-border/60 bg-background/80 p-3 shadow-sm backdrop-blur-md transition-all">
+    /* 1. Prevent full-page scroll & clamp layout height */
+    <div className="flex h-screen w-full overflow-hidden bg-slate-50/50 dark:bg-zinc-950">
+
+      {/* 2. Lock sidebar height to exact viewport room available */}
+      <aside className="my-3 ml-3 flex h-[calc(100vh-1.5rem)] w-64 shrink-0 flex-col rounded-2xl border border-border/60 bg-background/80 p-3 shadow-sm backdrop-blur-md transition-all">
 
         {/* Brand Header */}
         <div className="flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors">
@@ -205,8 +205,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         </div>
       </aside>
 
-      {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto p-6">{children}</main>
+      {/* 3. Main Content Area handles internal scrolling */}
+      <main className="flex-1 overflow-y-auto h-screen p-6">{children}</main>
     </div>
   )
 }

@@ -46,6 +46,8 @@ export interface ChildTableSpec {
   fieldname: string
   doctype: string
   columns: FieldSpec[]
+  /** Optional heading shown above the grid — useful when a step combines a table with other fields. */
+  title?: string
 }
 
 export interface EntrySpec extends FormSpec {
@@ -78,6 +80,16 @@ export interface WizardStepColumn {
   sections: WizardStepSection[]
 }
 
+export interface WizardStepDialog {
+  /** Text on the button that opens the dialog. */
+  buttonLabel: string
+  /** Dialog heading — defaults to buttonLabel if omitted. */
+  title?: string
+  /** Fieldnames (from FormSpec.fields) shown inside the dialog. */
+  fieldnames?: string[]
+  /** An editable child-table grid shown inside the dialog (e.g. a log of infractions). */
+  childTable?: ChildTableSpec
+}
 export interface WizardStep {
   key: string
   label: string
@@ -89,6 +101,10 @@ export interface WizardStep {
   note?: string
   /** Renders an editable Frappe child-table grid for this step instead of flat fields. */
   childTable?: ChildTableSpec
+  /** A button that opens a small dialog form (e.g. a grouped set of checkboxes) — can combine with fieldnames/childTable on the same step. */
+  dialog?: WizardStepDialog
+  /** Fields-per-row for this step's flat `fieldnames` grid (when not using `columns`/sections). Defaults to 2. */
+  fieldColumns?: 1 | 2 | 3 | 4
 }
 
 export interface WizardLayout {

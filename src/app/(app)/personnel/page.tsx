@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Users, ArrowRight } from "lucide-react"
+import { Users, ArrowRight, CalendarDays } from "lucide-react"
 
 import {
   Card,
@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { title } from "process"
 
 const SCREENS = [
   {
@@ -17,6 +18,13 @@ const SCREENS = [
     icon: Users,
     badge: "248 Members",
   },
+  {
+    href: "/personnel/leaves",
+    title: "Leave Application",
+    description: "Fill out this form to record and submit your sick or vacation leave requests for managerial approval.",
+    icon: CalendarDays,
+    badge: "21 Leaves",
+  }
 ]
 
 export default function PersonnelPage() {

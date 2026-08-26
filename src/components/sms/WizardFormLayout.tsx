@@ -6,6 +6,12 @@ import { DynamicField } from "@/components/sms/DynamicField"
 import { PhotoUploadField } from "@/components/sms/PhotoUploadField"
 import { ChildTableGrid } from "@/components/sms/ChildTableGrid"
 import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 import type { FormSpec, FieldSpec, WizardLayout, WizardStepSection } from "@/lib/forms/types"
@@ -60,13 +66,14 @@ export function WizardFormLayout({
   control: Control<any>
 }) {
   const [activeStep, setActiveStep] = useState(0)
+  const [dialogOpen, setDialogOpen] = useState(false)
 
   const byName = new Map<string, FieldSpec>(spec.fields.map((f) => [f.fieldname, f]))
   const step = layout.steps[activeStep]
   const isFirst = activeStep === 0
   const isLast = activeStep === layout.steps.length - 1
   const hasColumns = !!step.columns && step.columns.length > 0
-  const isComingSoon = !hasColumns && !step.childTable && step.fieldnames.length === 0
+  const isComingSoon = !hasColumns && !step.childTable && !step.dialog && step.fieldnames.length === 0
 
   const mainColumn = step.columns?.find((c) => c.span === "main")
   const sidebarColumn = step.columns?.find((c) => c.span === "sidebar")
@@ -106,18 +113,6 @@ export function WizardFormLayout({
             {step.note ?? "This step needs its own fields/DocType before it can be filled in here."}
           </p>
         </div>
-      ) : step.childTable ? (
-        <Controller
-          control={control}
-          name={step.childTable.fieldname}
-          render={({ field }) => (
-            <ChildTableGrid
-              spec={step.childTable!}
-              rows={(field.value as Array<Record<string, unknown>>) ?? []}
-              onChange={field.onChange}
-            />
-          )}
-        />
       ) : hasColumns ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {mainColumn && (
@@ -136,12 +131,83 @@ export function WizardFormLayout({
           )}
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2">
-          {step.fieldnames.map((fname) => {
-            const fieldSpec = byName.get(fname)
-            if (!fieldSpec) return null
-            return <DynamicField key={fname} control={control} spec={fieldSpec} />
-          })}
+        <div className="grid gap-6">
+          {step.childTable && (
+            <Controller
+              control={control}
+              name={step.childTable.fieldname}
+              render={({ field }) => (
+                <ChildTableGrid
+                  spec={step.childTable!}
+                  rows={(field.value as Array<Record<string, unknown>>) ?? []}
+                  onChange={field.onChange}
+                />
+              )}
+            />
+          )}
+          {step.fieldnames.length > 0 && (
+            <div
+              className={cn(
+                "grid gap-4",
+                step.fieldColumns === 1
+                  ? "grid-cols-1"
+                  : step.fieldColumns === 3
+                  ? "grid-cols-1 sm:grid-cols-3"
+                  : step.fieldColumns === 4
+                  ? "grid-cols-1 sm:grid-cols-4"
+                  : "grid-cols-1 sm:grid-cols-2"
+              )}
+            >
+              {step.fieldnames.map((fname) => {
+                const fieldSpec = byName.get(fname)
+                if (!fieldSpec) return null
+                return <DynamicField key={fname} control={control} spec={fieldSpec} />
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {step.dialog && (
+        <div>
+          <Button type="button" variant="outline" onClick={() => setDialogOpen(true)}>
+            {step.dialog.buttonLabel}
+          </Button>
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <DialogContent className="max-w-sm">
+              <DialogHeader>
+                <DialogTitle>{step.dialog.title ?? step.dialog.buttonLabel}</DialogTitle>
+              </DialogHeader>
+              <div className="grid gap-3">
+                {step.dialog.childTable && (
+                  <Controller
+                    control={control}
+                    name={step.dialog.childTable.fieldname}
+                    render={({ field }) => (
+                      <ChildTableGrid
+                        spec={step.dialog!.childTable!}
+                        rows={(field.value as Array<Record<string, unknown>>) ?? []}
+                        onChange={field.onChange}
+                      />
+                    )}
+                  />
+                )}
+                {(step.dialog.fieldnames ?? []).map((fname) => {
+                  const fieldSpec = byName.get(fname)
+                  if (!fieldSpec) return null
+                  return <DynamicField key={fname} control={control} spec={fieldSpec} />
+                })}
+              </div>
+              <div className="flex justify-end gap-2 pt-2">
+                <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
+                  Close
+                </Button>
+                <Button type="button" onClick={() => setDialogOpen(false)}>
+                  Update
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       )}
     </div>
