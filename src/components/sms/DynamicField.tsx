@@ -5,6 +5,7 @@ import type { FieldSpec } from "@/lib/forms/types"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { DatePickerField } from "@/components/sms/DatePickerField"
+import { EmployeeSearchField } from "@/components/sms/EmployeeSearchField"
 import {
   Select,
   SelectContent,
@@ -99,6 +100,12 @@ export function DynamicField<T extends FieldValues>({
                     : raw.replace(/[^0-9]/g, "")
                   field.onChange(cleaned)
                 }}
+              />
+            ) : spec.fieldtype === "EmployeeSearch" ? (
+              <EmployeeSearchField
+                value={field.value}
+                onChange={field.onChange}
+                disabled={spec.readOnly}
               />
             ) : (
               <Input

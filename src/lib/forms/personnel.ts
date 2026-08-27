@@ -173,7 +173,20 @@ export const employeeWizardLayout: WizardLayout = {
             key: "schedules_leaves",
             label: "Schedules and Leaves",
             fieldnames: [],
-            note: "Shift assignment, rest days, and leave credit allocations — needs its own fields/DocType.",
+            childTable: {
+                fieldname: "leaves",  // must match the Table field's actual fieldname on Personnel Info
+                doctype: "SMS Personnel Leaves",
+                title: "Leave Records",
+                columns: [
+                    { fieldname: "date", label: "Date Filed", fieldtype: "Date" },
+                    { fieldname: "leave_type", label: "Leave Type", fieldtype: "Select", options: "Vacation\nSick\nEmergency\nPaternal\nMaternal\nOthers" },
+                    { fieldname: "other_leave_reason", label: "Other Reason", fieldtype: "Data" },
+                    { fieldname: "from_date", label: "From", fieldtype: "Date" },
+                    { fieldname: "to_date", label: "To", fieldtype: "Date" },
+                    { fieldname: "half_day", label: "Half Day", fieldtype: "Check" },
+                    { fieldname: "reason", label: "Reason", fieldtype: "Data" },
+                ],
+            },
         },
         {
             key: "benefits",

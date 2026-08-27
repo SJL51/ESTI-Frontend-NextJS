@@ -20,6 +20,7 @@ export type FieldType =
   | "Select"
   | "Attach Image"
   | "Phone"
+  | "EmployeeSearch"
 
 export interface FieldSpec {
   fieldname: string
@@ -66,6 +67,8 @@ export interface ReportSpec {
   title: string
   filters: FieldSpec[]
   columns: Array<{ fieldname: string; label: string; width?: number }>
+  /** Optional — fields to show in a read-only detail panel when a row is clicked. */
+  detailFields?: Array<{ fieldname: string; label: string }>
 }
 
 export interface WizardStepSection {
