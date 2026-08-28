@@ -46,7 +46,17 @@ export interface FormSpec {
 export interface ChildTableSpec {
   fieldname: string
   doctype: string
-  columns: FieldSpec[]
+  columns: Array<FieldSpec & {
+    /**
+     * Optional — when present, this column is read-only and displays
+     * `compute(row)` instead of an editable input bound to `fieldname`.
+     * Use for derived/display-only values that don't correspond to a real
+     * field on the child doctype (e.g. a "Days Out" count derived from
+     * from_date/to_date/half_day). `fieldname` must still be unique within
+     * `columns` (used as the React key) but need not exist on the doctype.
+     */
+    compute?: (row: Record<string, unknown>) => string
+  }>
   /** Optional heading shown above the grid — useful when a step combines a table with other fields. */
   title?: string
 }

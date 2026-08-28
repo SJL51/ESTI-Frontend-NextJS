@@ -18,6 +18,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import { RecordViewDialog, type RecordViewField } from "@/components/sms/RecordViewDialog"
 import { cn } from "@/lib/utils"
 import type { FormSpec, WizardLayout, ChildTableSpec, FieldSpec } from "@/lib/forms/types"
 
@@ -28,6 +29,13 @@ function ReadOnlyChildTable({
     spec: ChildTableSpec
     rows: Array<Record<string, unknown>>
 }) {
+    const [selected, setSelected] = useState<Record<string, unknown> | null>(null)
+
+    const viewFields: RecordViewField<Record<string, unknown>>[] = spec.columns.map((c) => ({
+        label: c.label,
+        render: (row) => (c.compute ? c.compute(row) : String(row[c.fieldname] ?? "—")),
+    }))
+
     return (
         <div className="space-y-2">
             {spec.title && (
@@ -49,10 +57,14 @@ function ReadOnlyChildTable({
                 </TableHeader>
                 <TableBody>
                     {rows.map((row, i) => (
-                        <TableRow key={i}>
+                        <TableRow
+                            key={i}
+                            className="cursor-pointer hover:bg-muted/50"
+                            onClick={() => setSelected(row)}
+                        >
                             {spec.columns.map((c) => (
                                 <TableCell key={c.fieldname} className="max-w-xs whitespace-normal wrap-break-word align-top">
-                                    {String(row[c.fieldname] ?? "—")}
+                                    {c.compute ? c.compute(row) : String(row[c.fieldname] ?? "—")}
                                 </TableCell>
                             ))}
                         </TableRow>
@@ -61,6 +73,13 @@ function ReadOnlyChildTable({
             </Table>
                 </div>
             )}
+            <RecordViewDialog
+                open={!!selected}
+                onOpenChange={(open) => !open && setSelected(null)}
+                row={selected}
+                fields={viewFields}
+                title={spec.title ?? "Details"}
+            />
         </div>
     )
 }

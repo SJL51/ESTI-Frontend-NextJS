@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { DatePickerField } from "@/components/sms/DatePickerField"
 import { EmployeeSearchField } from "@/components/sms/EmployeeSearchField"
+import { LinkField } from "@/components/sms/LinkField"
 import {
   Select,
   SelectContent,
@@ -103,6 +104,13 @@ export function DynamicField<T extends FieldValues>({
               />
             ) : spec.fieldtype === "EmployeeSearch" ? (
               <EmployeeSearchField
+                value={field.value}
+                onChange={field.onChange}
+                disabled={spec.readOnly}
+              />
+            ) : spec.fieldtype === "Link" ? (
+              <LinkField
+                doctype={spec.options ?? ""}
                 value={field.value}
                 onChange={field.onChange}
                 disabled={spec.readOnly}

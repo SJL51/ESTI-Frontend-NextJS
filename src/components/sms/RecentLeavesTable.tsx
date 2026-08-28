@@ -1,6 +1,7 @@
 "use client"
 
 import { SearchTable } from "@/components/sms/SearchTable"
+import { formatLeaveDays } from "@/lib/leave-days"
 
 interface LeaveRow {
     employee_id: string
@@ -29,6 +30,19 @@ export function RecentLeavesTable() {
                 { header: "From", render: (row) => row.from_date },
                 { header: "To", render: (row) => row.to_date },
                 { header: "Half Day", render: (row) => (row.half_day ? "Yes" : "No") },
+                { header: "Days Out", render: (row) => formatLeaveDays(row.from_date, row.to_date, row.half_day) },
+            ]}
+            viewTitle={(row) => row.employee_name}
+            viewFields={[
+                { label: "Employee", render: (row) => row.employee_name },
+                { label: "Department", render: (row) => row.department },
+                { label: "Leave Type", render: (row) => row.leave_type },
+                { label: "From", render: (row) => row.from_date },
+                { label: "To", render: (row) => row.to_date },
+                { label: "Half Day", render: (row) => (row.half_day ? "Yes" : "No") },
+                { label: "Days Out", render: (row) => formatLeaveDays(row.from_date, row.to_date, row.half_day) },
+                { label: "Date Filed", render: (row) => row.date },
+                { label: "Reason", render: (row) => row.reason || "—" },
             ]}
         />
     )

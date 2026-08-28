@@ -1,14 +1,12 @@
 import Link from "next/link"
-import { Users, ArrowRight, CalendarDays } from "lucide-react"
+import { Users, ArrowRight, CalendarDays, Building } from "lucide-react"
 
 import {
   Card,
   CardDescription,
-  CardHeader,
   CardTitle,
 } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { title } from "process"
 
 const SCREENS = [
   {
@@ -24,6 +22,13 @@ const SCREENS = [
     description: "Fill out this form to record and submit your sick or vacation leave requests for managerial approval.",
     icon: CalendarDays,
     badge: "21 Leaves",
+  },
+  {
+    href: "/personnel/departments",
+    title: "Add New Department",
+    description: "Create a new organizational department, assign a department head, and configure initial team settings.",
+    icon: Building,
+    badge: "Setup",
   }
 ]
 

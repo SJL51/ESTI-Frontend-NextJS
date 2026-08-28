@@ -1,4 +1,15 @@
 import { FormSpec, WizardLayout } from "./types"
+import { formatLeaveDays } from "@/lib/leave-days"
+
+export const departmentSpec: FormSpec = {
+    doctype: "SMS Personnel Departments",
+    title: "Departments",
+    fields: [
+        { fieldname: "code", label: "Code", fieldtype: "Data", required: true, inListView: true },
+        { fieldname: "department", label: "Department", fieldtype: "Data", required: true, inListView: true },
+        { fieldname: "head", label: "Head", fieldtype: "EmployeeSearch" },
+    ],
+}
 
 export const employeeSpec: FormSpec = {
     doctype: "Personnel Info",
@@ -22,7 +33,7 @@ export const employeeSpec: FormSpec = {
         { fieldname: "mailing_address", label: "Mailing Address", fieldtype: "Data" },
         { fieldname: "employee_status", label: "Employee Status", fieldtype: "Select", options: "Contractual\nPart Timer\nProbationary\nRegular", inListView: true },
         { fieldname: "date_hired", label: "Date Hired", fieldtype: "Date" },
-        { fieldname: "department", label: "Department", fieldtype: "Select", options: "ADMINISTRATION DEPARTMENT\nCOMPUTER SCIENCE DEPARTMENT\nELECTRONICS DEPARTMENT\nFinance\nGENERAL SERVICES DEPARTMENT\nHIGH SCHOOL DEPARTMENT\nHOTEL&RESTAURANT DEPARTMENT\nHuman Resources\nMARINE DEPT.\nProperty Custodian\nRegistrar\nSCIENCE DEPARTMENT\nTOURISM DEPARTMENT", inListView: true },
+        { fieldname: "department", label: "Department", fieldtype: "Link", options: "SMS Personnel Departments", inListView: true },
         
         // Payroll Info
         { fieldname: "emergency_contacts", label: "Emergency Contacts", fieldtype: "Small Text" },
@@ -180,10 +191,17 @@ export const employeeWizardLayout: WizardLayout = {
                 columns: [
                     { fieldname: "date", label: "Date Filed", fieldtype: "Date" },
                     { fieldname: "leave_type", label: "Leave Type", fieldtype: "Select", options: "Vacation\nSick\nEmergency\nPaternal\nMaternal\nOthers" },
-                    { fieldname: "other_leave_reason", label: "Other Reason", fieldtype: "Data" },
                     { fieldname: "from_date", label: "From", fieldtype: "Date" },
                     { fieldname: "to_date", label: "To", fieldtype: "Date" },
                     { fieldname: "half_day", label: "Half Day", fieldtype: "Check" },
+                    {
+                        fieldname: "days_out",
+                        label: "Days Out",
+                        fieldtype: "Data",
+                        // No real field on SMS Personnel Leaves — read-only, derived per row.
+                        compute: (row) =>
+                            formatLeaveDays(String(row.from_date ?? ""), String(row.to_date ?? ""), row.half_day),
+                    },
                     { fieldname: "reason", label: "Reason", fieldtype: "Data" },
                 ],
             },

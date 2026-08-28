@@ -1,5 +1,4 @@
 "use client"
-
 import type { ChildTableSpec } from "@/lib/forms/types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -19,7 +18,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-
 /** Shared editable grid for a Frappe child table, used by EntryScreen. */
 export function ChildTableGrid({
   spec,
@@ -35,15 +33,12 @@ export function ChildTableGrid({
     next[index] = { ...next[index], [fieldname]: value }
     onChange(next)
   }
-
   function addRow() {
     onChange([...rows, {}])
   }
-
   function removeRow(index: number) {
     onChange(rows.filter((_, i) => i !== index))
   }
-
   return (
     <div className="grid gap-2">
       {spec.title && (
@@ -66,7 +61,9 @@ export function ChildTableGrid({
               <TableRow key={i}>
                 {spec.columns.map((c) => (
                   <TableCell key={c.fieldname}>
-                    {c.fieldtype === "Select" ? (
+                    {c.compute ? (
+                      <span className="text-sm text-muted-foreground">{c.compute(row)}</span>
+                    ) : c.fieldtype === "Select" ? (
                       <Select
                         value={String(row[c.fieldname] ?? "")}
                         onValueChange={(value) => updateCell(i, c.fieldname, value ?? "")}
