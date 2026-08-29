@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useQuery } from "@tanstack/react-query"
 import { frappe } from "@/lib/frappe"
 import { MasterDetailScreen } from "@/components/sms/MasterDetailScreen"
+import { KpiCardsGrid, type KpiCardData } from "@/components/sms/KpiCardsGrid"
 import { employeeSpec, employeeWizardLayout } from "@/lib/forms/personnel"
 import {
   Users,
@@ -15,7 +16,6 @@ import {
   ChevronRight,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
 
 interface PersonnelKpis {
   total: number
@@ -31,7 +31,7 @@ export default function EmployeesPage() {
     queryFn: () => frappe.call<PersonnelKpis>("campus_erp.api.personnel.get_personnel_kpis"),
   })
 
-  const kpiData = [
+  const kpiData: KpiCardData[] = [
     {
       title: "Total Personnel",
       value: kpis?.total,
@@ -93,29 +93,7 @@ export default function EmployeesPage() {
       </div>
 
       {/* Analytics KPI Cards Grid */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-        {kpiData.map((kpi) => {
-          const Icon = kpi.icon
-          return (
-            <Card
-              key={kpi.title}
-              className={`rounded-xl border shadow-sm transition-all ${kpi.cardBg}`}
-            >
-              <CardContent className="flex flex-col items-center justify-center p-2.5 text-center">
-                <div className={`mb-1.5 rounded-lg p-1.5 ${kpi.iconBg}`}>
-                  <Icon className="h-4 w-4" />
-                </div>
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-700">
-                  {kpi.title}
-                </p>
-                <h3 className="text-xl font-bold tracking-tight text-slate-900">
-                  {isLoading ? "…" : kpi.value ?? 0}
-                </h3>
-              </CardContent>
-            </Card>
-          )
-        })}
-      </div>
+      <KpiCardsGrid items={kpiData} isLoading={isLoading} />
 
       <MasterDetailScreen spec={employeeSpec} wizard={employeeWizardLayout} />
     </div>
