@@ -192,6 +192,7 @@ export const employeeWizardLayout: WizardLayout = {
                 columns: [
                     { fieldname: "date", label: "Date Filed", fieldtype: "Date" },
                     { fieldname: "leave_type", label: "Leave Type", fieldtype: "Select", options: "Vacation\nSick\nEmergency\nPaternal\nMaternal\nOthers" },
+                    { fieldname: "status", label: "Status", fieldtype: "Select", options: "Pending\nApproved\nRejected", readOnly: true },
                     { fieldname: "from_date", label: "From", fieldtype: "Date" },
                     { fieldname: "to_date", label: "To", fieldtype: "Date" },
                     { fieldname: "half_day", label: "Half Day", fieldtype: "Check" },
@@ -219,7 +220,8 @@ export const employeeWizardLayout: WizardLayout = {
             fieldnames: [],
             childTable: {
                 fieldname: "loan_ledgers",
-                label: "Loans",
+                doctype: "SMS Personnel Loan",
+                title: "Loans",
                 columns: [
                     { fieldname: "al_no", label: "AL No.", fieldtype: "Data" },
                     { fieldname: "date", label: "Date", fieldtype: "Date" },
