@@ -5,7 +5,7 @@ export const departmentSpec: FormSpec = {
     doctype: "SMS Personnel Departments",
     title: "Departments",
     fields: [
-        { fieldname: "code", label: "Code", fieldtype: "Data", required: true, inListView: true },
+        { fieldname: "deptcode", label: "Code", fieldtype: "Data", required: true, inListView: true },
         { fieldname: "department", label: "Department", fieldtype: "Data", required: true, inListView: true },
         { fieldname: "head", label: "Head", fieldtype: "EmployeeSearch" },
     ],
@@ -13,7 +13,7 @@ export const departmentSpec: FormSpec = {
 
 export const employeeSpec: FormSpec = {
     doctype: "Personnel Info",
-    title: "Personnel Directory",
+    title: "Employee Roster",
     fields: [
         { fieldname: "employee_id", label: "Employee ID", fieldtype: "Data", inListView: true },
         { fieldname: "rfid", label: "RFID", fieldtype: "Data" },
@@ -41,6 +41,7 @@ export const employeeSpec: FormSpec = {
         
         // Skills
         { fieldname: "skills", label: "Skills", fieldtype: "Small Text" },
+
         // Payroll Policy
         { fieldname: "paid_holiday", label: "Paid Holiday", fieldtype: "Check" },
         { fieldname: "leave_credits", label: "Leave Credits", fieldtype: "Check" },
