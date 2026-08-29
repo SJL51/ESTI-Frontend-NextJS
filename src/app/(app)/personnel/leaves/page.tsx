@@ -97,7 +97,7 @@ export default function LeavesApplicationPage() {
                 })}
             </div>
 
-            <div className="grid grid-cols-[30%_70%] gap-8 mr-6">
+            <div className="grid grid-cols-[40%_60%] gap-8 mr-6">
                 <LeaveApplicationForm />
                 <RecentLeavesTable />
             </div>
