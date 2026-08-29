@@ -1,0 +1,19 @@
+[33mcommit 5e08224cac79f8f0c97454d994f6f132df23d2ea[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: SJL51 <saezjaynuel@gmail.com>
+Date:   Fri Aug 28 17:01:31 2026 +0800
+
+    Dynamic Search and Leaves Improvemnet
+
+ src/app/(app)/personnel/departments/page.tsx |  6 [32m++++++[m
+ src/app/(app)/personnel/page.tsx             | 11 [32m++++++++[m[31m---[m
+ src/components/sms/ChildTableGrid.tsx        |  9 [32m+++[m[31m------[m
+ src/components/sms/DynamicField.tsx          |  8 [32m++++++++[m
+ src/components/sms/LinkField.tsx             | 74 [32m++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++[m
+ src/components/sms/RecentLeavesTable.tsx     | 14 [32m++++++++++++++[m
+ src/components/sms/RecordDetailView.tsx      | 23 [32m+++++++++++++++++++++[m[31m--[m
+ src/components/sms/RecordViewDialog.tsx      | 58 [32m++++++++++++++++++++++++++++++++++++++++++++++++++++++++++[m
+ src/components/sms/SearchTable.tsx           | 39 [32m+++++++++++++++++++++++++++++++++++[m[31m----[m
+ src/lib/forms/personnel.ts                   | 22 [32m++++++++++++++++++++[m[31m--[m
+ src/lib/forms/types.ts                       | 12 [32m+++++++++++[m[31m-[m
+ src/lib/leave-days.ts                        | 33 [32m+++++++++++++++++++++++++++++++++[m
+ 12 files changed, 291 insertions(+), 18 deletions(-)

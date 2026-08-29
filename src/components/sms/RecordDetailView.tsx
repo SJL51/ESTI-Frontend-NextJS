@@ -21,6 +21,8 @@ import {
 import { RecordViewDialog, type RecordViewField } from "@/components/sms/RecordViewDialog"
 import { cn } from "@/lib/utils"
 import type { FormSpec, WizardLayout, ChildTableSpec, FieldSpec } from "@/lib/forms/types"
+import { useQuery } from "@tanstack/react-query"
+import { frappe } from "@/lib/frappe"
 
 function ReadOnlyChildTable({
     spec,
@@ -90,6 +92,19 @@ function formatValue(value: unknown): string {
     return String(value)
 }
 
+function EmployeeNameDisplay({ employeeId }: { employeeId: string }) {
+    const { data } = useQuery({
+        queryKey: ["employee-name", employeeId],
+        queryFn: async () => {
+            const emp = await frappe.call("campus_erp.api.personnel.get_employee", { employee_id: employeeId })
+            return emp as { first_name: string; last_name: string } | null
+        },
+        enabled: !!employeeId,
+    })
+    if (!data) return <>{employeeId}</>
+    return <>{data.first_name} {data.last_name}</>
+}
+
 function FieldGrid({
     fields,
     row,
@@ -112,7 +127,13 @@ function FieldGrid({
             {fields.map((f) => (
                 <div key={f.fieldname} className="space-y-1">
                     <p className="text-xs font-medium text-muted-foreground">{f.label}</p>
-                    <p className="text-sm whitespace-pre-line">{formatValue(row[f.fieldname])}</p>
+                    <p className="text-sm whitespace-pre-line">
+                        {f.fieldtype === "EmployeeSearch" && row[f.fieldname] ? (
+                            <EmployeeNameDisplay employeeId={String(row[f.fieldname])} />
+                        ) : (
+                            formatValue(row[f.fieldname])
+                        )}
+                    </p>
                 </div>
             ))}
         </div>

@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Users, ArrowRight, CalendarDays, Building } from "lucide-react"
+import { Users, ArrowRight, CalendarDays, Building, File } from "lucide-react"
 
 import {
   Card,
@@ -29,6 +29,13 @@ const SCREENS = [
     description: "Create a new organizational department, assign a department head, and configure initial team settings.",
     icon: Building,
     badge: "Setup",
+  },
+  {
+    href: "/personnel/loans",
+    title: "New Loan Application",
+    description: "Submit a borrower's financial profile, select appropriate loan products, and upload required verification documents.",
+    icon: File,
+    badge: "Application",
   }
 ]
 

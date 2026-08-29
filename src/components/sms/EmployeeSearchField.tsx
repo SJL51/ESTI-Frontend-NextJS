@@ -1,9 +1,7 @@
 "use client"
-
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { frappe } from "@/lib/frappe"
-
 interface PersonnelSearchResult {
   employee_id: string
   first_name: string
@@ -11,7 +9,6 @@ interface PersonnelSearchResult {
   middle_name?: string
   department: string
 }
-
 export function EmployeeSearchField({
   value,
   onChange,
@@ -23,7 +20,6 @@ export function EmployeeSearchField({
 }) {
   const [query, setQuery] = useState("")
   const [selected, setSelected] = useState<PersonnelSearchResult | null>(null)
-
   const { data: results } = useQuery({
     queryKey: ["personnel-search", query],
     queryFn: async () => {
@@ -32,6 +28,27 @@ export function EmployeeSearchField({
     },
     enabled: query.length > 1,
   })
+
+  // Resolve an incoming stored employee_id (edit mode opening an existing
+  // record) into a display name, since the raw id alone isn't meaningful.
+  useEffect(() => {
+    if (value && (!selected || selected.employee_id !== value)) {
+      let cancelled = false
+      frappe.call("campus_erp.api.personnel.get_employee", { employee_id: value }).then((emp: any) => {
+        if (!cancelled && emp) {
+          setSelected(emp)
+          setQuery(`${emp.first_name} ${emp.last_name}`)
+        }
+      })
+      return () => {
+        cancelled = true
+      }
+    }
+    if (!value && selected) {
+      setSelected(null)
+      setQuery("")
+    }
+  }, [value])
 
   return (
     <div className="relative">

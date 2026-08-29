@@ -217,7 +217,19 @@ export const employeeWizardLayout: WizardLayout = {
             key: "loan_ledgers",
             label: "Loan Ledgers",
             fieldnames: [],
-            note: "Existing loans, deduction history, and balances — needs its own child-table DocType (typically view-only during onboarding).",
+            childTable: {
+                fieldname: "loan_ledgers",
+                label: "Loans",
+                columns: [
+                    { fieldname: "al_no", label: "AL No.", fieldtype: "Data" },
+                    { fieldname: "date", label: "Date", fieldtype: "Date" },
+                    { fieldname: "loan_type", label: "Loan Type", fieldtype: "Select" },
+                    { fieldname: "basic_pay", label: "Basic Pay", fieldtype: "Currency" },
+                    { fieldname: "previous_loan", label: "Previous Loan", fieldtype: "Currency" },
+                    { fieldname: "amount", label: "Amount", fieldtype: "Currency" },
+                    { fieldname: "reason", label: "Reason", fieldtype: "Small Text" },
+                ],
+            },
         },
     ],
 }
