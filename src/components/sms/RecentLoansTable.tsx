@@ -13,6 +13,7 @@ interface LoanRow {
     previous_loan: number
     amount: number
     reason: string
+    status: string
 }
 
 export function RecentLoansTable() {
@@ -30,6 +31,7 @@ export function RecentLoansTable() {
                 { header: "Type", render: (row) => row.loan_type },
                 { header: "Amount", render: (row) => row.amount },
                 { header: "Date", render: (row) => row.date },
+                { header: "Status", render: (row) => row.status },
             ]}
             viewTitle={(row) => row.employee_name}
             viewFields={[

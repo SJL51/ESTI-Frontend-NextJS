@@ -14,14 +14,14 @@ const SCREENS = [
     title: "Employees",
     description: "Personnel directory — employee IDs, departments, designations, employment status.",
     icon: Users,
-    badge: "248 Members",
+    badge: "Directory",
   },
   {
     href: "/personnel/leaves",
     title: "Leave Application",
     description: "Fill out this form to record and submit your sick or vacation leave requests for managerial approval.",
     icon: CalendarDays,
-    badge: "21 Leaves",
+    badge: "Request",
   },
   {
     href: "/personnel/departments",

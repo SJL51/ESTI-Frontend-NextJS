@@ -7,6 +7,7 @@ import { frappe, getErrorMessage } from "@/lib/frappe"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 import {
   Dialog,
   DialogContent,
@@ -30,6 +31,8 @@ export interface PendingLeaveRow {
   reason: string
   date: string
   status: string
+  vacation_leave: number
+  sick_leave: number
 }
 
 interface ApproveFormState {
@@ -58,6 +61,17 @@ const viewFields: RecordViewField<PendingLeaveRow>[] = [
   { label: "Date Applied", render: (row) => row.date },
 ]
 
+function InfoField({ label, value }: { label: string; value: React.ReactNode }) {
+  return (
+    <div className="space-y-1">
+      <p className="text-xs font-medium text-muted-foreground">{label}</p>
+      <p className="rounded-md border bg-muted/40 px-2 py-1.5 text-sm">
+        {value === "" || value === null || value === undefined ? "—" : value}
+      </p>
+    </div>
+  )
+}
+
 export function PendingLeavesTable() {
   const queryClient = useQueryClient()
   const [approvingRow, setApprovingRow] = useState<PendingLeaveRow | null>(null)
@@ -68,10 +82,15 @@ export function PendingLeavesTable() {
     queryClient.invalidateQueries({ queryKey: ["recent-leaves"] })
   }
 
+  const closeDialog = () => {
+    setApprovingRow(null)
+    setForm(emptyApproveForm)
+  }
+
   const approve = useMutation({
     mutationFn: (row: PendingLeaveRow) =>
       frappe.call("campus_erp.api.personnel.approve_leave_application", {
-        employee_id: row.employee_id,
+        personnel_info: row.personnel_info,
         row_name: row.name,
         days_approved: form.days_approved ? Number(form.days_approved) : null,
         with_pay: form.with_pay ? Number(form.with_pay) : null,
@@ -81,8 +100,7 @@ export function PendingLeavesTable() {
       }),
     onSuccess: () => {
       toast.success("Leave approved")
-      setApprovingRow(null)
-      setForm(emptyApproveForm)
+      closeDialog()
       invalidate()
     },
     onError: (error) => toast.error(getErrorMessage(error)),
@@ -91,15 +109,20 @@ export function PendingLeavesTable() {
   const reject = useMutation({
     mutationFn: (row: PendingLeaveRow) =>
       frappe.call("campus_erp.api.personnel.reject_leave_application", {
-        employee_id: row.employee_id,
+        personnel_info: row.personnel_info,
         row_name: row.name,
+        immediate_superior: form.immediate_superior || null,
+        hrd_head: form.hrd_head || null,
       }),
     onSuccess: () => {
       toast.success("Leave rejected")
+      closeDialog()
       invalidate()
     },
     onError: (error) => toast.error(getErrorMessage(error)),
   })
+
+  const busy = approve.isPending || reject.isPending
 
   return (
     <>
@@ -127,17 +150,9 @@ export function PendingLeavesTable() {
                     setForm(emptyApproveForm)
                     setApprovingRow(row)
                   }}
-                  disabled={approve.isPending || reject.isPending}
+                  disabled={busy}
                 >
-                  Approve
-                </Button>
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  onClick={() => reject.mutate(row)}
-                  disabled={approve.isPending || reject.isPending}
-                >
-                  Reject
+                  Process
                 </Button>
               </div>
             ),
@@ -148,17 +163,41 @@ export function PendingLeavesTable() {
       <Dialog
         open={approvingRow !== null}
         onOpenChange={(open) => {
-          if (!open) setApprovingRow(null)
+          if (!open) closeDialog()
         }}
       >
-        <DialogContent>
+        <DialogContent className="sm:max-w-2xl">
           <DialogHeader>
             <DialogTitle>
-              Approve Leave — {approvingRow?.employee_name}
+              Leave Processing — {approvingRow?.employee_name}
             </DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-3">
+          <div className="space-y-5">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              <InfoField label="Employee Name" value={approvingRow?.employee_name} />
+              <InfoField label="Employee ID" value={approvingRow?.employee_id} />
+              <InfoField label="Department" value={approvingRow?.department} />
+              <InfoField label="Status" value={approvingRow?.status} />
+              <InfoField label="Type of Leave" value={approvingRow?.leave_type} />
+              <InfoField label="Date Applied" value={approvingRow?.date} />
+              <InfoField label="From" value={approvingRow?.from_date} />
+              <InfoField label="To" value={approvingRow?.to_date} />
+            </div>
+
+            <div className="space-y-1">
+              <Label>Reason</Label>
+              <Textarea value={approvingRow?.reason ?? ""} readOnly rows={2} className="resize-none bg-muted/40" />
+            </div>
+
+            <div className="space-y-3 rounded-lg border p-3">
+              <p className="text-xs font-medium text-muted-foreground">Leave Credits</p>
+              <div className="grid grid-cols-2 gap-3">
+                <InfoField label="Vacation Balance" value={approvingRow?.vacation_leave} />
+                <InfoField label="Sick Balance" value={approvingRow?.sick_leave} />
+              </div>
+            </div>
+
             <div>
               <Label htmlFor="days_approved">No. of Days Approved</Label>
               <Input
@@ -211,16 +250,25 @@ export function PendingLeavesTable() {
             </div>
           </div>
 
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setApprovingRow(null)}>
-              Cancel
-            </Button>
+          <DialogFooter className="sm:justify-between">
             <Button
-              onClick={() => approvingRow && approve.mutate(approvingRow)}
-              disabled={approve.isPending}
+              variant="destructive"
+              onClick={() => approvingRow && reject.mutate(approvingRow)}
+              disabled={busy}
             >
-              Confirm Approval
+              {reject.isPending ? "Rejecting..." : "Reject"}
             </Button>
+            <div className="flex flex-col-reverse gap-2 sm:flex-row">
+              <Button variant="outline" onClick={closeDialog} disabled={busy}>
+                Cancel
+              </Button>
+              <Button
+                onClick={() => approvingRow && approve.mutate(approvingRow)}
+                disabled={busy}
+              >
+                {approve.isPending ? "Approving..." : "Approve"}
+              </Button>
+            </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>
