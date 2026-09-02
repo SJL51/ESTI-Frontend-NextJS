@@ -8,6 +8,9 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Files, Clock, CalendarDays, CheckCheck } from "lucide-react";
 
+// TODO: stub data — replace with a real call to get_personnel_kpis
+// (or a dedicated leaves-KPI endpoint) once one exists. These four
+// numbers are hardcoded and do not reflect live data.
 const kpiData = [
     {
         title: "Total Applications",
@@ -56,11 +59,8 @@ export default function LeavesApplicationPage() {
                             Personnel
                         </Link>
                         <ChevronRight className="h-3 w-3" />
-                        <span className="font-medium text-foreground">Employees Directory</span>
+                        <span className="font-medium text-foreground">Leave Applications</span>
                     </div>
-                    <h1 className="text-xl font-semibold tracking-tight text-foreground">
-                        Employees Directory
-                    </h1>
                 </div>
             </div>
 
@@ -89,9 +89,14 @@ export default function LeavesApplicationPage() {
                 })}
             </div>
 
-            <div className="grid grid-cols-[40%_60%] gap-8 mr-6">
-                <LeaveApplicationForm />
-                <RecentLeavesTable />
+            {/* Form + Table: stacks on small/medium screens, side-by-side at lg+ */}
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-5 lg:gap-8">
+                <div className="lg:col-span-2">
+                    <LeaveApplicationForm />
+                </div>
+                <div className="lg:col-span-3">
+                    <RecentLeavesTable />
+                </div>
             </div>
         </div>
     )

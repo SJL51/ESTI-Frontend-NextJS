@@ -86,9 +86,6 @@ export default function EmployeesPage() {
             <ChevronRight className="h-3 w-3" />
             <span className="font-medium text-foreground">Employees Directory</span>
           </div>
-          <h1 className="text-xl font-semibold tracking-tight text-foreground">
-            Employees Directory
-          </h1>
         </div>
       </div>
 

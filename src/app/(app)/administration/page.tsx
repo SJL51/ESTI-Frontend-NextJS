@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { CheckSquare, ArrowRight, Landmark } from "lucide-react"
+import { CheckSquare, ArrowRight, Landmark, Settings } from "lucide-react"
 
 import {
   Card,
@@ -23,6 +23,13 @@ const SCREENS = [
     icon: Landmark,
     badge: "Approval",
   },
+  {
+    href: "/administration/configuration",
+    title: "Configuration",
+    description: "Manage system preferences, integration settings, and administrative controls.",
+    icon: Settings,
+    badge: "System",
+  }
 ]
 
 export default function AdminPage() {

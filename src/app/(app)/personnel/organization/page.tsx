@@ -22,9 +22,6 @@ export default function DepartmentsPage() {
           <ChevronRight className="h-3 w-3" />
           <span className="font-medium text-foreground">Departments Directory</span>
         </div>
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          Departments Directory
-        </h1>
       </div>
     </div>
   <MasterDetailScreen spec={departmentSpec} />

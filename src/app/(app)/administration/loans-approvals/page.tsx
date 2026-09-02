@@ -9,6 +9,12 @@ export default function PendingLoanApprovalsPage() {
     return (
         <div className="space-y-4">
             <div className="flex items-center gap-4">
+                <Link href="/administration" title="Back to Leave Applications">
+                    <Button variant="outline" size="icon" className="h-8 w-8 rounded-lg">
+                        <ArrowLeft className="h-4 w-4" />
+                    </Button>
+                </Link>
+
                 <div>
                     <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                         <Link href="/administration" className="transition-colors hover:text-foreground">
@@ -17,9 +23,6 @@ export default function PendingLoanApprovalsPage() {
                         <ChevronRight className="h-3 w-3" />
                         <span className="font-medium text-foreground">Pending Approvals</span>
                     </div>
-                    <h1 className="text-xl font-semibold tracking-tight text-foreground">
-                        Pending Loan Approvals
-                    </h1>
                 </div>
             </div>
 

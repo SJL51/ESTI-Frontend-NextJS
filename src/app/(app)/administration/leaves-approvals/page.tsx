@@ -9,7 +9,7 @@ export default function PendingLeaveApprovalsPage() {
     return (
         <div className="space-y-4">
             <div className="flex items-center gap-4">
-                <Link href="/personnel/leaves" title="Back to Leave Applications">
+                <Link href="/administration" title="Back to Leave Applications">
                     <Button variant="outline" size="icon" className="h-8 w-8 rounded-lg">
                         <ArrowLeft className="h-4 w-4" />
                     </Button>
@@ -23,9 +23,6 @@ export default function PendingLeaveApprovalsPage() {
                         <ChevronRight className="h-3 w-3" />
                         <span className="font-medium text-foreground">Pending Approvals</span>
                     </div>
-                    <h1 className="text-xl font-semibold tracking-tight text-foreground">
-                        Pending Leave Approvals
-                    </h1>
                 </div>
             </div>
 

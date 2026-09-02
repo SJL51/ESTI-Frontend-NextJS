@@ -383,9 +383,6 @@ export default function SchedulesPage() {
                         <ChevronRight className="h-3 w-3" />
                         <span className="font-medium text-foreground">Attendance & Schedules</span>
                     </div>
-                    <h1 className="text-xl font-semibold tracking-tight text-foreground">
-                        Attendance & Schedules
-                    </h1>
                 </div>
             </div>
 

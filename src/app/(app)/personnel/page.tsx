@@ -7,7 +7,7 @@ import {
   Banknote,
   Clock,
   ShieldAlert,
-  FileText,
+  ClockPlus,
 } from "lucide-react"
 
 import { Card, CardDescription, CardTitle } from "@/components/ui/card"
@@ -63,12 +63,12 @@ const SCREENS = [
     actionText: "Manage Structure",
   },
   {
-    href: "/personnel/reports",
-    title: "Personnel Reports",
-    description: "Generate headcount, attendance summary, leave usage, and organizational metrics.",
-    icon: FileText,
-    badge: "Analytics",
-    actionText: "View Reports",
+    href: "/personnel/overtime",
+    title: "Overtime Application",
+    description: "Submit overtime requests, track approval status, and manage extra work hours.",
+    icon: ClockPlus,
+    badge: "Requests",
+    actionText: "Apply Overtime",
   },
 ]
 

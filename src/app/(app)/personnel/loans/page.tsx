@@ -24,15 +24,16 @@ export default function LoanApplicationPage() {
                         <ChevronRight className="h-3 w-3" />
                         <span className="font-medium text-foreground">Loan Applications</span>
                     </div>
-                    <h1 className="text-xl font-semibold tracking-tight text-foreground">
-                        Loan Applications
-                    </h1>
                 </div>
             </div>
 
-            <div className="grid grid-cols-[30%_70%] gap-8 mr-6">
-                <LoanApplicationForm />
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-5 lg:gap-8">
+                <div className="lg:col-span-2">
+                    <LoanApplicationForm />
+                </div>
+                <div className="lg:col-span-3">                
                 <RecentLoansTable />
+                </div>
             </div>
         </div>
     )
