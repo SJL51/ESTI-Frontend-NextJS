@@ -68,6 +68,7 @@ const viewFields: RecordViewField<PendingLoanRow>[] = [
   { label: "Employee", render: (row) => row.employee_name },
   { label: "Department", render: (row) => row.department },
   { label: "Loan Type", render: (row) => row.loan_type },
+  { label: "Date Applied", render: (row) => row.date },
   { label: "Amount", render: (row) => row.amount },
   { label: "Basic Pay", render: (row) => row.basic_pay },
   { label: "Previous Loan", render: (row) => row.previous_loan },
@@ -176,6 +177,7 @@ export function PendingLoansTable() {
           { header: "Employee", render: (row) => row.employee_name },
           { header: "Department", render: (row) => row.department },
           { header: "Type", render: (row) => row.loan_type },
+          { header: "Date Applied", render: (row) => row.date },
           { header: "Amount", render: (row) => row.amount },
           {
             header: "Actions",

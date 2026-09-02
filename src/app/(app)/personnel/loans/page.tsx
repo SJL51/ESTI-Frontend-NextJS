@@ -30,14 +30,6 @@ export default function LoanApplicationPage() {
                 </div>
             </div>
 
-            <div className="flex justify-end">
-                <Link href="/personnel/loans/approvals">
-                    <Button variant="outline" size="sm">
-                        Pending Approvals
-                    </Button>
-                </Link>
-            </div>
-
             <div className="grid grid-cols-[30%_70%] gap-8 mr-6">
                 <LoanApplicationForm />
                 <RecentLoansTable />

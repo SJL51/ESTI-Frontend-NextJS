@@ -1,15 +1,15 @@
 "use client"
 
-import { PendingLoansTable } from "@/components/sms/PendingLoansTable"
+import { PendingLeavesTable } from "@/components/sms/PendingLeavesTable"
 import Link from "next/link"
 import { ArrowLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
-export default function PendingLoanApprovalsPage() {
+export default function PendingLeaveApprovalsPage() {
     return (
         <div className="space-y-4">
             <div className="flex items-center gap-4">
-                <Link href="/personnel/loans" title="Back to Loan Applications">
+                <Link href="/personnel/leaves" title="Back to Leave Applications">
                     <Button variant="outline" size="icon" className="h-8 w-8 rounded-lg">
                         <ArrowLeft className="h-4 w-4" />
                     </Button>
@@ -17,23 +17,19 @@ export default function PendingLoanApprovalsPage() {
 
                 <div>
                     <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                        <Link href="/personnel" className="transition-colors hover:text-foreground">
-                            Personnel
-                        </Link>
-                        <ChevronRight className="h-3 w-3" />
-                        <Link href="/personnel/loans" className="transition-colors hover:text-foreground">
-                            Loan Applications
+                        <Link href="/administration" className="transition-colors hover:text-foreground">
+                            Administration
                         </Link>
                         <ChevronRight className="h-3 w-3" />
                         <span className="font-medium text-foreground">Pending Approvals</span>
                     </div>
                     <h1 className="text-xl font-semibold tracking-tight text-foreground">
-                        Pending Loan Approvals
+                        Pending Leave Approvals
                     </h1>
                 </div>
             </div>
 
-            <PendingLoansTable />
+            <PendingLeavesTable />
         </div>
     )
 }

@@ -64,14 +64,6 @@ export default function LeavesApplicationPage() {
                 </div>
             </div>
 
-            <div className="flex justify-end">
-                <Link href="/personnel/leaves/approvals">
-                    <Button variant="outline" size="sm">
-                        Pending Approvals
-                    </Button>
-                </Link>
-            </div>
-
             {/* Analytics KPI Cards Grid */}
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 {kpiData.map((kpi) => {

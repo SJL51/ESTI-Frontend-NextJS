@@ -11,6 +11,20 @@ export const departmentSpec: FormSpec = {
     ],
 }
 
+export const holidaySpec: FormSpec = {
+    doctype: "SMS Personnel Holidays",
+    title: "Holidays",
+    fields: [
+        { fieldname: "holiday_name", label: "Holiday", fieldtype: "Data", required: true, inListView: true },
+        {
+            fieldname: "month", label: "Month", fieldtype: "Select",
+            options: "January\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember",
+            required: true, inListView: true
+        },
+        { fieldname: "day", label: "Day", fieldtype: "Int", required: true, inListView: true },
+    ],
+}
+
 export const employeeSpec: FormSpec = {
     doctype: "Personnel Info",
     title: "Employee Roster",

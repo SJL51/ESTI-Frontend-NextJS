@@ -138,6 +138,7 @@ export function PendingLeavesTable() {
           { header: "Employee", render: (row) => row.employee_name },
           { header: "Department", render: (row) => row.department },
           { header: "Leave Type", render: (row) => row.leave_type },
+          { header: "Date Applied", render: (row) => row.date },
           { header: "From", render: (row) => row.from_date },
           { header: "To", render: (row) => row.to_date },
           {

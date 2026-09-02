@@ -10,14 +10,14 @@ import { Badge } from "@/components/ui/badge"
 
 const SCREENS = [
   {
-    href: "/personnel/leaves-approval",
+    href: "/administration/leaves-approvals",
     title: "Leaves Approval",
     description: "Review, approve, or reject pending employee leave applications and track leave balances.",
     icon: CheckSquare,
     badge: "Approval",
   },
   {
-    href: "/personnel/loans-approval",
+    href: "/administration/loans-approvals",
     title: "Loans Approval",
     description: "Evaluate, manage, and process submitted employee loan applications and repayment terms.",
     icon: Landmark,

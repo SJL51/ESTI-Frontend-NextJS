@@ -1,42 +1,75 @@
 import Link from "next/link"
-import { Users, ArrowRight, CalendarDays, Building, File } from "lucide-react"
-
 import {
-  Card,
-  CardDescription,
-  CardTitle,
-} from "@/components/ui/card"
+  Users,
+  ArrowRight,
+  CalendarDays,
+  Building2,
+  Banknote,
+  Clock,
+  ShieldAlert,
+  FileText,
+} from "lucide-react"
+
+import { Card, CardDescription, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 
 const SCREENS = [
   {
     href: "/personnel/employees",
-    title: "Employees",
-    description: "Personnel directory — employee IDs, departments, designations, employment status.",
+    title: "Employees Directory",
+    description: "Manage employee profiles, designations, ID assignments, and employment status.",
     icon: Users,
-    badge: "Directory",
+    badge: "Core Data",
+    actionText: "Open Directory",
   },
   {
     href: "/personnel/leaves",
-    title: "Leave Application",
-    description: "Fill out this form to record and submit your sick or vacation leave requests for managerial approval.",
+    title: "Leaves & Time Off",
+    description: "Review pending applications, track leave balances, and configure vacation or sick policies.",
     icon: CalendarDays,
-    badge: "Request",
-  },
-  {
-    href: "/personnel/departments",
-    title: "Add New Department",
-    description: "Create a new organizational department, assign a department head, and configure initial team settings.",
-    icon: Building,
-    badge: "Setup",
+    badge: "Management",
+    actionText: "Manage Leaves",
   },
   {
     href: "/personnel/loans",
-    title: "New Loan Application",
-    description: "Submit a borrower's financial profile, select appropriate loan products, and upload required verification documents.",
-    icon: File,
-    badge: "Application",
-  }
+    title: "Loans & Advance Pay",
+    description: "Process new loan requests, monitor active payment balances, and view approval status.",
+    icon: Banknote,
+    badge: "Financial",
+    actionText: "Manage Loans",
+  },
+  {
+    href: "/personnel/deductions",
+    title: "Deduction Rules",
+    description: "Configure statutory, company-wide, and custom recurring payroll deductions.",
+    icon: ShieldAlert,
+    badge: "Payroll Setup",
+    actionText: "Manage Deductions",
+  },
+  {
+    href: "/personnel/schedules",
+    title: "Attendance & Holidays",
+    description: "Define work shifts, roster schedules, and maintain company calendar holidays.",
+    icon: Clock,
+    badge: "Operations",
+    actionText: "Configure Schedule",
+  },
+  {
+    href: "/personnel/organization",
+    title: "Departments & Roles",
+    description: "Structure departments, assign heads of units, and manage official designations.",
+    icon: Building2,
+    badge: "Setup",
+    actionText: "Manage Structure",
+  },
+  {
+    href: "/personnel/reports",
+    title: "Personnel Reports",
+    description: "Generate headcount, attendance summary, leave usage, and organizational metrics.",
+    icon: FileText,
+    badge: "Analytics",
+    actionText: "View Reports",
+  },
 ]
 
 export default function PersonnelPage() {
@@ -47,7 +80,7 @@ export default function PersonnelPage() {
         <div>
           <h1 className="text-xl font-semibold tracking-tight text-foreground">Personnel</h1>
           <p className="text-xs text-muted-foreground">
-            Employee directory and staff records.
+            Manage employee directory, schedules, organization structure, and requests.
           </p>
         </div>
         <Badge variant="outline" className="text-[11px] font-normal">
@@ -62,7 +95,7 @@ export default function PersonnelPage() {
 
           return (
             <Link key={s.href} href={s.href} className="group outline-none">
-              <Card className="flex flex-col justify-between p-3.5 transition-all duration-150 hover:border-primary/50 hover:bg-muted/30 hover:shadow-sm">
+              <Card className="flex h-full flex-col justify-between p-3.5 transition-all duration-150 hover:border-primary/50 hover:bg-muted/30 hover:shadow-sm">
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10 text-primary">
@@ -86,7 +119,7 @@ export default function PersonnelPage() {
                 </div>
 
                 <div className="mt-3 flex items-center gap-1 text-[11px] font-medium text-primary">
-                  <span>Open Directory</span>
+                  <span>{s.actionText}</span>
                   <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
                 </div>
               </Card>
