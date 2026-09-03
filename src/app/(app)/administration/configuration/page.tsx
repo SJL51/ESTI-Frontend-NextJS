@@ -1,11 +1,13 @@
-import React from 'react'
+import { ModuleLandingPage } from "@/components/sms/ModuleLandingPage"
 
-const page = () => {
+export default function ConfigurationPage() {
   return (
-    <div>
-      hello
-    </div>
+    <ModuleLandingPage
+      title="Configuration"
+      subtitle="System preferences, integration settings, and administrative controls."
+      badgeLabel="Setting"
+      screens={[]}
+      emptyMessage="No configuration screens yet — check back as this module is built out."
+    />
   )
 }
-
-export default page

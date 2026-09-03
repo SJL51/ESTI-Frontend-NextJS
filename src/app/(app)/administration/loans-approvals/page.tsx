@@ -1,31 +1,12 @@
 "use client"
 
 import { PendingLoansTable } from "@/components/sms/PendingLoansTable"
-import Link from "next/link"
-import { ArrowLeft, ChevronRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { PageHeader } from "@/components/sms/PageHeader"
 
 export default function PendingLoanApprovalsPage() {
     return (
         <div className="space-y-4">
-            <div className="flex items-center gap-4">
-                <Link href="/administration" title="Back to Leave Applications">
-                    <Button variant="outline" size="icon" className="h-8 w-8 rounded-lg">
-                        <ArrowLeft className="h-4 w-4" />
-                    </Button>
-                </Link>
-
-                <div>
-                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                        <Link href="/administration" className="transition-colors hover:text-foreground">
-                            Administration
-                        </Link>
-                        <ChevronRight className="h-3 w-3" />
-                        <span className="font-medium text-foreground">Pending Approvals</span>
-                    </div>
-                </div>
-            </div>
-
+            <PageHeader backHref="/administration" backLabel="Administration" current="Pending Approvals" />
             <PendingLoansTable />
         </div>
     )

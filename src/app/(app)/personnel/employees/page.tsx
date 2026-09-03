@@ -12,10 +12,8 @@ import {
   Clock,
   Briefcase,
   Hourglass,
-  ArrowLeft,
-  ChevronRight,
 } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { PageHeader } from "@/components/sms/PageHeader"
 
 interface PersonnelKpis {
   total: number
@@ -72,22 +70,7 @@ export default function EmployeesPage() {
   return (
     <div className="space-y-4">
       {/* Navigation Header & Breadcrumbs */}
-      <div className="flex items-center gap-4">
-        <Link href="/personnel" title="Back to Personnel">
-          <Button variant="outline" size="icon" className="h-8 w-8 rounded-lg">
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-        </Link>
-        <div>
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <Link href="/personnel" className="transition-colors hover:text-foreground">
-              Personnel
-            </Link>
-            <ChevronRight className="h-3 w-3" />
-            <span className="font-medium text-foreground">Employees Directory</span>
-          </div>
-        </div>
-      </div>
+      <PageHeader backHref="/personnel" backLabel="Personnel" current="Employees Directory" />
 
       {/* Analytics KPI Cards Grid */}
       <KpiCardsGrid items={kpiData} isLoading={isLoading} />

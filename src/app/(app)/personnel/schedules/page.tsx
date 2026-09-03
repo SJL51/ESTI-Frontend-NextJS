@@ -13,11 +13,9 @@ import {
     Trash2,
     Edit2,
     Loader2,
-    ChevronRight,
-    ArrowLeft
 } from "lucide-react"
-import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { PageHeader } from "@/components/sms/PageHeader"
 import {
     Card,
     CardContent,
@@ -368,23 +366,7 @@ function HolidaysTab() {
 export default function SchedulesPage() {
     return (
         <div className="space-y-6">
-                        <div className="flex items-center gap-4">
-                <Link href="/personnel" title="Back to Personnel">
-                    <Button variant="outline" size="icon" className="h-8 w-8 rounded-lg">
-                        <ArrowLeft className="h-4 w-4" />
-                    </Button>
-                </Link>
-
-                <div>
-                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                        <Link href="/personnel" className="transition-colors hover:text-foreground">
-                            Personnel
-                        </Link>
-                        <ChevronRight className="h-3 w-3" />
-                        <span className="font-medium text-foreground">Attendance & Schedules</span>
-                    </div>
-                </div>
-            </div>
+            <PageHeader backHref="/personnel" backLabel="Personnel" current="Attendance & Schedules" />
 
             <Tabs defaultValue="shifts" className="w-full space-y-4">
                 <div className="flex items-center justify-between">
