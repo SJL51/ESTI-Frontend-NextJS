@@ -88,7 +88,7 @@ export function PendingLeavesTable() {
             value={row.reason ?? ""}
             readOnly
             rows={2}
-            className="min-h-[70px] resize-none bg-muted/30 focus-visible:ring-0"
+            className="min-h-17.5 resize-none bg-muted/30 focus-visible:ring-0"
           />
         </div>
       )}

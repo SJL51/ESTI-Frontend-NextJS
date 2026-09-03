@@ -2,24 +2,28 @@
 import { useEffect, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { frappe } from "@/lib/frappe"
+
 interface PersonnelSearchResult {
+  personnel_info: string
   employee_id: string
   first_name: string
   last_name: string
   middle_name?: string
   department: string
 }
+
 export function EmployeeSearchField({
   value,
   onChange,
   disabled,
 }: {
   value?: string
-  onChange: (employeeId: string) => void
+  onChange: (personnelInfo: string) => void
   disabled?: boolean
 }) {
   const [query, setQuery] = useState("")
   const [selected, setSelected] = useState<PersonnelSearchResult | null>(null)
+
   const { data: results } = useQuery({
     queryKey: ["personnel-search", query],
     queryFn: async () => {
@@ -29,12 +33,15 @@ export function EmployeeSearchField({
     enabled: query.length > 1,
   })
 
-  // Resolve an incoming stored employee_id (edit mode opening an existing
-  // record) into a display name, since the raw id alone isn't meaningful.
+  // Resolve an incoming stored value — the `Personnel Info` docname — into a
+  // display name, since the raw docname alone isn't meaningful. `head`
+  // stores that docname (not the business `employee_id`), and
+  // get_employee's only param is `personnel_info`, so both sides must agree
+  // on that.
   useEffect(() => {
-    if (value && (!selected || selected.employee_id !== value)) {
+    if (value && (!selected || selected.personnel_info !== value)) {
       let cancelled = false
-      frappe.call("campus_erp.api.personnel.get_employee", { employee_id: value }).then((emp: any) => {
+      frappe.call("campus_erp.api.personnel.get_employee", { personnel_info: value }).then((emp: any) => {
         if (!cancelled && emp) {
           setSelected(emp)
           setQuery(`${emp.first_name} ${emp.last_name}`)
@@ -71,12 +78,12 @@ export function EmployeeSearchField({
             const fullName = `${emp.first_name} ${emp.last_name}`
             return (
               <li
-                key={emp.employee_id}
+                key={emp.personnel_info}
                 className="px-2 py-1 hover:bg-gray-100 cursor-pointer text-sm"
                 onClick={() => {
                   setSelected(emp)
                   setQuery(fullName)
-                  onChange(emp.employee_id)
+                  onChange(emp.personnel_info)
                 }}
               >
                 {fullName} — {emp.department}

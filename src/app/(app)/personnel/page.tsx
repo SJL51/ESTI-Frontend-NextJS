@@ -51,14 +51,6 @@ const SCREENS = [
     actionText: "Configure Schedule",
   },
   {
-    href: "/personnel/organization",
-    title: "Departments & Roles",
-    description: "Structure departments, assign heads of units, and manage official designations.",
-    icon: Building2,
-    badge: "Setup",
-    actionText: "Manage Structure",
-  },
-  {
     href: "/personnel/overtime",
     title: "Overtime Application",
     description: "Submit overtime requests, track approval status, and manage extra work hours.",

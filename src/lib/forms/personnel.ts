@@ -1,16 +1,6 @@
 import { FormSpec, WizardLayout } from "./types"
 import { formatLeaveDays } from "@/lib/leave-days"
 
-export const departmentSpec: FormSpec = {
-    doctype: "SMS Personnel Departments",
-    title: "Departments",
-    fields: [
-        { fieldname: "deptcode", label: "Code", fieldtype: "Data", required: true, inListView: true },
-        { fieldname: "department", label: "Department", fieldtype: "Data", required: true, inListView: true },
-        { fieldname: "head", label: "Head", fieldtype: "EmployeeSearch" },
-    ],
-}
-
 export const holidaySpec: FormSpec = {
     doctype: "SMS Personnel Holidays",
     title: "Holidays",
