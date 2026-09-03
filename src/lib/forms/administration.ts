@@ -4,7 +4,7 @@ import type { FormSpec } from "@/lib/forms/types"
  * Departments moved out of Personnel and into Administration > Configuration
  * (2026-09-03) — department master data (code/name/head) is an
  * administrative setup concern, not a personnel-workflow screen. Backs
- * `app/(app)/administration/configuration/departments/page.tsx`.
+ * `app/(app)/administration/configuration/page.tsx`.
  *
  * ⚠️ `deptcode` was previously declared as `code` (wrong — the real field is
  * `deptcode`) and that fix was found reverted once already (see CLAUDE.md

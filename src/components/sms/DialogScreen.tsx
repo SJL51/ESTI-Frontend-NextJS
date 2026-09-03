@@ -22,13 +22,19 @@ import {
  * password change, settings toggles, override confirmations — a single-column
  * form with one primary action, never a full page.
  *
- * Two backing modes (2026-09-03, added for Departments' move to
- * Administration > Configuration): pass `method` for a whitelisted
- * campus_erp.api.* RPC (the original/only mode), or `doctype` to hit the
- * generic /api/resource/<doctype> REST endpoints directly via frappe.js's
+ * Two backing modes: pass `method` for a whitelisted campus_erp.api.* RPC
+ * (the original/only mode), or `doctype` to hit the generic
+ * /api/resource/<doctype> REST endpoints directly via frappe.js's
  * createDoc/updateDoc — the same thing MasterDetailScreen already does for
  * simple master-data doctypes with no custom business logic. Exactly one of
  * the two must be provided.
+ *
+ * NOTE: `doctype` mode was originally added with Departments' move to
+ * Administration > Configuration in mind, but that screen ended up with
+ * hand-rolled Dialog/useForm/useMutation code instead of using this
+ * component — DialogScreen still has zero confirmed live usages as of
+ * 2026-09-03. Prefer migrating `EditDepartmentDialog` to use this mode
+ * rather than adding new hand-rolled dialogs.
  *
  * Pass `recordName` + `initialValues` to edit an existing document instead
  * of creating a new one — the dialog stays otherwise identical.

@@ -15,8 +15,8 @@ interface PageHeaderProps {
  * below a module landing page (e.g. /personnel/leaves under /personnel).
  * Extracted 2026-09-03 — was previously copy-pasted verbatim across
  * administration/leaves-approvals, administration/loans-approvals,
- * personnel/leaves, personnel/loans, personnel/organization,
- * personnel/employees, and personnel/schedules.
+ * personnel/leaves, personnel/loans, personnel/employees, and
+ * personnel/schedules.
  */
 export function PageHeader({ backHref, backLabel, current }: PageHeaderProps) {
   return (
