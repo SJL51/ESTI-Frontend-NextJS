@@ -38,11 +38,11 @@ export const employeeSpec: FormSpec = {
         { fieldname: "employee_status", label: "Employee Status", fieldtype: "Select", options: "Contractual\nPart Timer\nProbationary\nRegular", inListView: true },
         { fieldname: "date_hired", label: "Date Hired", fieldtype: "Date" },
         { fieldname: "department", label: "Department", fieldtype: "Link", options: "SMS Personnel Departments", inListView: true },
-        
+
         // Payroll Info
         { fieldname: "emergency_contacts", label: "Emergency Contacts", fieldtype: "Small Text" },
         { fieldname: "family_dependents", label: "Family/Dependents", fieldtype: "Small Text" },
-        
+
         // Skills
         { fieldname: "skills", label: "Skills", fieldtype: "Small Text" },
 
@@ -61,23 +61,23 @@ export const employeeSpec: FormSpec = {
         { fieldname: "philhealth", label: "PHILHEALTH", fieldtype: "Data" },
         { fieldname: "pag_ibig", label: "PAG-IBIG", fieldtype: "Data" },
 
-        { fieldname: "with_holding_tax", label: "With Holding Tax", fieldtype: "Int" },
-        { fieldname: "sss_deduction", label: "SSS Deduction", fieldtype: "Int" },
-        { fieldname: "philhealth_deduction", label: "PHILHEALTH Deduction", fieldtype: "Int" },
-        { fieldname: "pagibig_deduction", label: "PAG-IBIG Deduction", fieldtype: "Int" },
+        { fieldname: "with_holding_tax", label: "With Holding Tax", fieldtype: "Currency", readOnly: true },
+        { fieldname: "sss_deduction", label: "SSS Deduction", fieldtype: "Currency", readOnly: true },
+        { fieldname: "philhealth_deduction", label: "PHILHEALTH Deduction", fieldtype: "Currency", readOnly: true },
+        { fieldname: "pagibig_deduction", label: "PAG-IBIG Deduction", fieldtype: "Currency", readOnly: true },
 
-        { fieldname: "gross_pay", label: "Gross Pay", fieldtype: "Int" },
-        { fieldname: "allowance", label: "Allowance", fieldtype: "Int" },
-        { fieldname: "reg_rate_pre_hour", label: "Reg. Rate per Hour", fieldtype: "Int" },
-        { fieldname: "reg_ot_per_hour", label: "Reg. OT per Hour", fieldtype: "Int" },
+        { fieldname: "gross_pay", label: "Gross Pay", fieldtype: "Currency" },
+        { fieldname: "allowance", label: "Allowance", fieldtype: "Currency" },
+        { fieldname: "reg_rate_pre_hour", label: "Reg. Rate per Hour", fieldtype: "Currency", readOnly: true },
+        { fieldname: "reg_ot_per_hour", label: "Reg. OT per Hour", fieldtype: "Currency", readOnly: true },
 
-        { fieldname: "sunday_rate_per_hour", label: "Sunday Rate per Hour", fieldtype: "Int" },
-        { fieldname: "sunday_ot_per_hour", label: "Sunday OT per Hour", fieldtype: "Int" },
-        { fieldname: "holiday_rate_per_hour", label: "Holiday Rate per Hour", fieldtype: "Int" },
-        { fieldname: "holiday_ot_per_hour", label: "Holiday OT per Hour", fieldtype: "Int" },
+        { fieldname: "sunday_rate_per_hour", label: "Sunday Rate per Hour", fieldtype: "Currency", readOnly: true },
+        { fieldname: "sunday_ot_per_hour", label: "Sunday OT per Hour", fieldtype: "Currency", readOnly: true },
+        { fieldname: "holiday_rate_per_hour", label: "Holiday Rate per Hour", fieldtype: "Currency", readOnly: true },
+        { fieldname: "holiday_ot_per_hour", label: "Holiday OT per Hour", fieldtype: "Currency", readOnly: true },
 
-        { fieldname: "late_rate_per_hour", label: "Late Rate per Hour", fieldtype: "Int" },
-        { fieldname: "undertime_rate_per_hour", label: "Undertime Rate per Hour", fieldtype: "Int" },
+        { fieldname: "late_rate_per_hour", label: "Late Rate per Hour", fieldtype: "Currency", readOnly: true },
+        { fieldname: "undertime_rate_per_hour", label: "Undertime Rate per Hour", fieldtype: "Currency", readOnly: true },
         { fieldname: "work_status", label: "Work Status", fieldtype: "Select", options: "In Active\nActive\nExecutive\nConsultant" },
         { fieldname: "with_atm_card", label: "With ATM Card", fieldtype: "Check" },
     ],
@@ -142,7 +142,7 @@ export const employeeWizardLayout: WizardLayout = {
         {
             key: "primary_contacts",
             label: "Primary Contacts",
-            fieldnames: ["emergency_contacts", "family_dependents" ],
+            fieldnames: ["emergency_contacts", "family_dependents"],
         },
         {
             key: "education",
@@ -179,7 +179,7 @@ export const employeeWizardLayout: WizardLayout = {
         {
             key: "payroll_info",
             label: "Payroll Info",
-            fieldnames: ["tin_number", "sss_number", "philhealth", "pag_ibig", "with_holding_tax", "sss_deduction", "philhealth_deduction", "pagibig_deduction", "gross_pay", "allowance", "reg_rate_pre_hour", "reg_ot_per_hour", "sunday_rate_per_hour", "sunday_ot_per_hour", "holiday_rate_per_hour", "holiday_ot_per_hour", "late_rate_per_hour", "undertime_rate_per_hour", "work_status", "with_atm_card", ],
+            fieldnames: ["tin_number", "sss_number", "philhealth", "pag_ibig", "with_holding_tax", "sss_deduction", "philhealth_deduction", "pagibig_deduction", "gross_pay", "allowance", "reg_rate_pre_hour", "reg_ot_per_hour", "sunday_rate_per_hour", "sunday_ot_per_hour", "holiday_rate_per_hour", "holiday_ot_per_hour", "late_rate_per_hour", "undertime_rate_per_hour", "work_status", "with_atm_card",],
             fieldColumns: 4,
             dialog: {
                 buttonLabel: "Policy",

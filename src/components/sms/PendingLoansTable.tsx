@@ -6,7 +6,6 @@ import { frappe, getErrorMessage } from "@/lib/frappe"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 import {
   Select,
   SelectContent,
@@ -14,9 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { InfoField } from "@/components/sms/InfoField"
-import { ApprovalProcessingTable } from "@/components/sms/ApprovalProcessingTable"
-import type { RecordViewField } from "@/components/sms/RecordViewDialog"
+import { createApprovalTable } from "@/components/sms/createApprovalTable"
 
 export interface PendingLoanRow {
   name: string
@@ -45,30 +42,7 @@ interface LoanFormState {
   approved_by: string
 }
 
-const emptyForm: LoanFormState = {
-  interest_rate: "",
-  term: "",
-  deduction_schedule: "Every Period",
-  interest_cost: "",
-  amortization: "",
-  loan_balance: "",
-  recommended_by: "",
-  approved_by: "",
-}
-
-const viewFields: RecordViewField<PendingLoanRow>[] = [
-  { label: "AL No.", render: (row) => row.al_no },
-  { label: "Employee", render: (row) => row.employee_name },
-  { label: "Department", render: (row) => row.department },
-  { label: "Loan Type", render: (row) => row.loan_type },
-  { label: "Date Applied", render: (row) => row.date },
-  { label: "Amount", render: (row) => row.amount },
-  { label: "Basic Pay", render: (row) => row.basic_pay },
-  { label: "Previous Loan", render: (row) => row.previous_loan },
-  { label: "Reason", render: (row) => row.reason },
-]
-
-/** Loan's Compute-terms panel — the one piece that needs its own mutation, so it's a real component, not an inline render prop. */
+/** Loan's compute-terms panel — has its own mutation, so it stays a real component. */
 function LoanTermsSection({
   row,
   form,
@@ -183,87 +157,93 @@ function LoanTermsSection({
   )
 }
 
-export function PendingLoansTable() {
-  return (
-    <ApprovalProcessingTable<PendingLoanRow, LoanFormState>
-      title="Pending Loan Approvals"
-      queryKey="pending-loans"
-      method="campus_erp.api.personnel.list_pending_loans"
-      emptyMessage="No pending loan applications."
-      viewFields={viewFields}
-      viewTitle={(row) => `${row.employee_name} — Loan Application`}
-      columns={[
-        { header: "AL No.", render: (row) => row.al_no },
-        { header: "Employee", render: (row) => row.employee_name },
-        { header: "Department", render: (row) => row.department },
-        { header: "Type", render: (row) => row.loan_type },
-        { header: "Date Applied", render: (row) => row.date },
-        { header: "Amount", render: (row) => row.amount },
-      ]}
-      dialogTitle={(row) => `Loan Processing — ${row.al_no}`}
-      emptyForm={emptyForm}
-      renderInfoGrid={(row) => (
-        <>
-          <InfoField label="Employee Name" value={row.employee_name} />
-          <InfoField label="Employee ID" value={row.employee_id} />
-          <InfoField label="Department" value={row.department} />
-          <InfoField label="Date Applied" value={row.date} />
-          <InfoField label="Type of Loan" value={row.loan_type} />
-          <InfoField label="Amount" value={row.amount} />
-          <InfoField label="Basic Pay" value={row.basic_pay} />
-          <InfoField label="Previous Loan" value={row.previous_loan} />
-        </>
-      )}
-      renderReasonPanel={(row) => (
-        <div className="space-y-1">
-          <Label>Purpose</Label>
-          <Textarea value={row.reason ?? ""} readOnly rows={2} className="resize-none bg-muted/40" />
-        </div>
-      )}
-      MiddleSection={LoanTermsSection}
-      renderDecisionFields={(form, setForm) => (
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <Label htmlFor="recommended_by">Recommended By</Label>
-            <Input
-              id="recommended_by"
-              value={form.recommended_by}
-              onChange={(e) => setForm((f) => ({ ...f, recommended_by: e.target.value }))}
-            />
-          </div>
-          <div>
-            <Label htmlFor="approved_by">Approved By</Label>
-            <Input
-              id="approved_by"
-              value={form.approved_by}
-              onChange={(e) => setForm((f) => ({ ...f, approved_by: e.target.value }))}
-            />
-          </div>
-        </div>
-      )}
-      approveMethod="campus_erp.api.personnel.approve_loan_application"
-      rejectMethod="campus_erp.api.personnel.reject_loan_application"
-      buildApprovePayload={(row, form) => ({
-        personnel_info: row.personnel_info,
-        row_name: row.name,
-        interest_rate: form.interest_rate ? Number(form.interest_rate) : null,
-        term: form.term ? Number(form.term) : null,
-        deduction_schedule: form.deduction_schedule || null,
-        interest_cost: form.interest_cost ? Number(form.interest_cost) : null,
-        amortization: form.amortization ? Number(form.amortization) : null,
-        loan_balance: form.loan_balance ? Number(form.loan_balance) : null,
-        recommended_by: form.recommended_by || null,
-        approved_by: form.approved_by || null,
-      })}
-      buildRejectPayload={(row, form) => ({
-        personnel_info: row.personnel_info,
-        row_name: row.name,
-        recommended_by: form.recommended_by || null,
-        approved_by: form.approved_by || null,
-      })}
-      invalidateKeys={["pending-loans", "recent-loans"]}
-      approveSuccessMessage="Loan approved"
-      rejectSuccessMessage="Loan rejected"
-    />
-  )
-}
+export const PendingLoansTable = createApprovalTable<PendingLoanRow, LoanFormState>({
+  title: "Pending Loan Approvals",
+  queryKey: "pending-loans",
+  method: "campus_erp.api.personnel.list_pending_loans",
+  emptyMessage: "No pending loan applications.",
+
+  columns: [
+    { header: "AL No.", render: (row) => row.al_no },
+    { header: "Employee", render: (row) => row.employee_name },
+    { header: "Department", render: (row) => row.department },
+    { header: "Type", render: (row) => row.loan_type },
+    { header: "Date Applied", render: (row) => row.date },
+    { header: "Amount", render: (row) => row.amount },
+  ],
+
+  infoFields: [
+    { label: "Employee Name", render: (row) => row.employee_name },
+    { label: "Employee ID", render: (row) => row.employee_id },
+    { label: "Department", render: (row) => row.department },
+    { label: "Date Applied", render: (row) => row.date },
+    { label: "Type of Loan", render: (row) => row.loan_type },
+    { label: "Amount", render: (row) => row.amount },
+    { label: "Basic Pay", render: (row) => row.basic_pay },
+    { label: "Previous Loan", render: (row) => row.previous_loan },
+  ],
+
+  reasonField: { label: "Purpose", render: (row) => row.reason },
+
+  dialogTitle: (row) => `Loan Processing — ${row.al_no}`,
+
+  emptyForm: {
+    interest_rate: "",
+    term: "",
+    deduction_schedule: "Every Period",
+    interest_cost: "",
+    amortization: "",
+    loan_balance: "",
+    recommended_by: "",
+    approved_by: "",
+  },
+
+  MiddleSection: LoanTermsSection,
+
+  renderDecisionFields: (form, setForm) => (
+    <div className="grid grid-cols-2 gap-3">
+      <div>
+        <Label htmlFor="recommended_by">Recommended By</Label>
+        <Input
+          id="recommended_by"
+          value={form.recommended_by}
+          onChange={(e) => setForm((f) => ({ ...f, recommended_by: e.target.value }))}
+        />
+      </div>
+      <div>
+        <Label htmlFor="approved_by">Approved By</Label>
+        <Input
+          id="approved_by"
+          value={form.approved_by}
+          onChange={(e) => setForm((f) => ({ ...f, approved_by: e.target.value }))}
+        />
+      </div>
+    </div>
+  ),
+
+  approveMethod: "campus_erp.api.personnel.approve_loan_application",
+  rejectMethod: "campus_erp.api.personnel.reject_loan_application",
+
+  buildApprovePayload: (row, form) => ({
+    personnel_info: row.personnel_info,
+    row_name: row.name,
+    interest_rate: form.interest_rate ? Number(form.interest_rate) : null,
+    term: form.term ? Number(form.term) : null,
+    deduction_schedule: form.deduction_schedule || null,
+    interest_cost: form.interest_cost ? Number(form.interest_cost) : null,
+    amortization: form.amortization ? Number(form.amortization) : null,
+    loan_balance: form.loan_balance ? Number(form.loan_balance) : null,
+    recommended_by: form.recommended_by || null,
+    approved_by: form.approved_by || null,
+  }),
+  buildRejectPayload: (row, form) => ({
+    personnel_info: row.personnel_info,
+    row_name: row.name,
+    recommended_by: form.recommended_by || null,
+    approved_by: form.approved_by || null,
+  }),
+
+  invalidateKeys: ["pending-loans", "recent-loans"],
+  approveSuccessMessage: "Loan approved",
+  rejectSuccessMessage: "Loan rejected",
+})

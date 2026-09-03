@@ -27,6 +27,7 @@ import { Form } from "@/components/ui/form"
 import { DynamicField } from "@/components/sms/DynamicField"
 import { WizardFormLayout } from "@/components/sms/WizardFormLayout"
 import { RecordDetailView } from "@/components/sms/RecordDetailView"
+import { usePayrollAutoCalc } from "@/hooks/usePayrollAutoCalc"
 
 /**
  * The ~115 legacy Master/Detail screens (blueprint §5.1): a list view plus an
@@ -69,6 +70,11 @@ export function MasterDetailScreen({
   })
 
   const form = useForm<Record<string, unknown>>({ defaultValues: {} })
+
+  // No-op for doctypes without a `gross_pay` field — only Personnel Info
+  // will ever see this fire in practice. Auto-fills SSS/PhilHealth/Pag-IBIG/
+  // withholding tax + all derived hourly rate fields whenever gross_pay changes.
+  usePayrollAutoCalc(form)
 
   const saveMutation = useMutation({
     mutationFn: async (values: Record<string, unknown>) => {
