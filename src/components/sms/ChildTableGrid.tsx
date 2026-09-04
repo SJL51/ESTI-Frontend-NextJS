@@ -2,6 +2,7 @@
 import type { ChildTableSpec } from "@/lib/forms/types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Checkbox } from "@/components/ui/checkbox"
 import { DatePickerField } from "@/components/sms/DatePickerField"
 import {
   Select,
@@ -28,7 +29,7 @@ export function ChildTableGrid({
   rows: Array<Record<string, unknown>>
   onChange: (rows: Array<Record<string, unknown>>) => void
 }) {
-  function updateCell(index: number, fieldname: string, value: string) {
+  function updateCell(index: number, fieldname: string, value: string | number) {
     const next = rows.slice()
     next[index] = { ...next[index], [fieldname]: value }
     onChange(next)
@@ -82,6 +83,13 @@ export function ChildTableGrid({
                             ))}
                         </SelectContent>
                       </Select>
+                    ) : c.fieldtype === "Check" ? (
+                      <Checkbox
+                        checked={Number(row[c.fieldname] ?? 0) === 1}
+                        onCheckedChange={(checked) =>
+                          updateCell(i, c.fieldname, checked ? 1 : 0)
+                        }
+                      />
                     ) : c.fieldtype === "Date" ? (
                       <DatePickerField
                         value={String(row[c.fieldname] ?? "")}

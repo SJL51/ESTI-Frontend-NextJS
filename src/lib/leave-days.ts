@@ -5,11 +5,12 @@
  * (search results) and the Personnel wizard's "Schedules and Leaves" step
  * (child-table computed column) so both format leave duration identically.
  *
- * `halfDay` is typed loosely on purpose: RecentLeavesTable gets a real
- * number (0/1) back from the API, but ChildTableGrid has no checkbox
- * handling for "Check" fieldtype columns (see ChildTableGrid.tsx — it falls
- * through to a plain text Input), so a row edited in the wizard could store
- * half_day as an arbitrary string. Treat only clear truthy values as "half".
+ * `halfDay` is typed loosely defensively, not because it needs to be:
+ * RecentLeavesTable gets a real number (0/1) back from the API, and
+ * ChildTableGrid now renders a real Checkbox for "Check" fieldtype columns
+ * (fixed — see ChildTableGrid.tsx), storing a clean 1/0. The loose checks
+ * below are kept as a safety net for any older/unmigrated records that may
+ * still hold a stray string value from before that fix.
  */
 export function calculateLeaveDays(
     fromDate: string,
