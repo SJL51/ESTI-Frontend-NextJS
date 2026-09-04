@@ -86,8 +86,9 @@ function ReadOnlyChildTable({
     )
 }
 
-function formatValue(value: unknown): string {
+function formatValue(value: unknown, fieldtype?: string): string {
     if (value === null || value === undefined || value === "") return "—"
+    if (fieldtype === "Check") return Number(value) === 1 ? "Yes" : "No"
     if (typeof value === "boolean") return value ? "Yes" : "No"
     return String(value)
 }
@@ -131,7 +132,7 @@ function FieldGrid({
                         {f.fieldtype === "EmployeeSearch" && row[f.fieldname] ? (
                             <EmployeeNameDisplay employeeId={String(row[f.fieldname])} />
                         ) : (
-                            formatValue(row[f.fieldname])
+                                formatValue(row[f.fieldname], f.fieldtype)
                         )}
                     </p>
                 </div>
