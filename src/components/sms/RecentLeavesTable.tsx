@@ -13,6 +13,7 @@ interface LeaveRow {
     half_day: number
     reason: string
     date: string
+    status: string
 }
 
 export function RecentLeavesTable() {
@@ -25,6 +26,7 @@ export function RecentLeavesTable() {
             emptyMessage="No leave records found."
             columns={[
                 { header: "Employee", render: (row) => row.employee_name },
+                { header: "Status", render: (row) => row.status },
                 { header: "Department", render: (row) => row.department },
                 { header: "Type", render: (row) => row.leave_type },
                 { header: "From", render: (row) => row.from_date },
@@ -35,6 +37,7 @@ export function RecentLeavesTable() {
             viewTitle={(row) => row.employee_name}
             viewFields={[
                 { label: "Employee", render: (row) => row.employee_name },
+                { label: "Status", render: (row) => row.status },
                 { label: "Department", render: (row) => row.department },
                 { label: "Leave Type", render: (row) => row.leave_type },
                 { label: "From", render: (row) => row.from_date },
