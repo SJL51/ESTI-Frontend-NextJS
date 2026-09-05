@@ -31,7 +31,7 @@ export function LoanApplicationForm() {
     const mutation = useMutation({
         mutationFn: () =>
             frappe.call("campus_erp.api.personnel.add_loan_application", {
-                personnel_info: employeeId,
+                employee_id: employeeId,
                 loan_type: loanType,
                 basic_pay: basicPay || undefined,
                 previous_loan: previousLoan || undefined,

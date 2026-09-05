@@ -225,7 +225,7 @@ export const PendingLoansTable = createApprovalTable<PendingLoanRow, LoanFormSta
   rejectMethod: "campus_erp.api.personnel.reject_loan_application",
 
   buildApprovePayload: (row, form) => ({
-    personnel_info: row.personnel_info,
+    employee_id: row.personnel_info,
     row_name: row.name,
     interest_rate: form.interest_rate ? Number(form.interest_rate) : null,
     term: form.term ? Number(form.term) : null,
@@ -237,7 +237,7 @@ export const PendingLoansTable = createApprovalTable<PendingLoanRow, LoanFormSta
     approved_by: form.approved_by || null,
   }),
   buildRejectPayload: (row, form) => ({
-    personnel_info: row.personnel_info,
+    employee_id: row.personnel_info,
     row_name: row.name,
     recommended_by: form.recommended_by || null,
     approved_by: form.approved_by || null,
