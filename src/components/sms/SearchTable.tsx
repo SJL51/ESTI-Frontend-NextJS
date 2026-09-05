@@ -70,7 +70,7 @@ export function SearchTable<T>({
     const [search, setSearch] = useState("")
     const [selected, setSelected] = useState<T | null>(null)
 
-    const { data: rows, isLoading } = useQuery({
+    const { data: rows, isLoading, isError, error } = useQuery({
         queryKey: [queryKey, search, extraParams],
         queryFn: async () => {
             const res = await frappe.call(method, {
@@ -93,6 +93,11 @@ export function SearchTable<T>({
 
             {isLoading ? (
                 <p className="text-sm text-gray-500">Loading...</p>
+            ) : isError ? (
+                <p className="text-sm text-red-600">
+                    Something went wrong loading results
+                    {error instanceof Error ? `: ${error.message}` : "."}
+                </p>
             ) : rows && rows.length > 0 ? (
                 <table className="w-full text-sm border">
                     <thead>
