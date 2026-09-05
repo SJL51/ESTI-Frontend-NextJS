@@ -1,5 +1,6 @@
 "use client"
 
+import { DialogScreen } from "@/components/sms/DialogScreen"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
@@ -133,6 +134,7 @@ export default function ConfigurationPage() {
 function ViewDepartmentsDialog() {
   const [open, setOpen] = useState(false)
   const [editing, setEditing] = useState<DepartmentRow | null>(null)
+  const queryClient = useQueryClient()
 
   const departmentsQuery = useQuery({
     queryKey: [departmentSpec.doctype, "list"],
@@ -231,84 +233,23 @@ function ViewDepartmentsDialog() {
         </DialogContent>
       </Dialog>
 
-      <EditDepartmentDialog department={editing} onOpenChange={(o) => !o && setEditing(null)} />
+      <DialogScreen
+        title="Edit Department"
+        fields={departmentSpec.fields}
+        doctype={departmentSpec.doctype}
+        recordName={editing?.name}
+        initialValues={
+          editing
+            ? { deptcode: editing.deptcode, department: editing.department, head: editing.head ?? "" }
+            : undefined
+        }
+        submitLabel="Save Changes"
+        open={!!editing}
+        onOpenChange={(o) => !o && setEditing(null)}
+        onSuccess={() =>
+          queryClient.invalidateQueries({ queryKey: [departmentSpec.doctype, "list"] })
+        }
+      />
     </>
-  )
-}
-
-/**
- * Edit form for a single department, reusing the exact same `departmentSpec`
- * fields (including the head personnel-picker) as "Add Department" above,
- * just pre-filled and saved via `updateDoc` instead of `createDoc`.
- */
-function EditDepartmentDialog({
-  department,
-  onOpenChange,
-}: {
-  department: DepartmentRow | null
-  onOpenChange: (open: boolean) => void
-}) {
-  const queryClient = useQueryClient()
-  const form = useForm<Record<string, unknown>>({
-    values: department
-      ? {
-        deptcode: department.deptcode,
-        department: department.department,
-        head: department.head,
-      }
-      : { deptcode: "", department: "", head: "" },
-  })
-
-  const mutation = useMutation({
-    mutationFn: (values: Record<string, unknown>) =>
-      frappe.updateDoc(departmentSpec.doctype, department!.name, values),
-    onSuccess: () => {
-      toast.success("Department updated")
-      queryClient.invalidateQueries({ queryKey: [departmentSpec.doctype, "list"] })
-      onOpenChange(false)
-    },
-    onError: (error) => toast.error(getErrorMessage(error)),
-  })
-
-  return (
-    <Dialog open={!!department} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl">
-        <DialogHeader>
-          <DialogTitle>Edit Department</DialogTitle>
-          <DialogDescription>
-            Update this department&apos;s code, name, or assigned head.
-          </DialogDescription>
-        </DialogHeader>
-
-        <Form {...form}>
-          <div className="space-y-4">
-            {departmentSpec.fields
-              .filter((f) => f.fieldname !== "head")
-              .map((f) => (
-                <DynamicField key={f.fieldname} control={form.control} spec={f} />
-              ))}
-            {departmentSpec.fields
-              .filter((f) => f.fieldname === "head")
-              .map((f) => (
-                <DynamicField key={f.fieldname} control={form.control} spec={f} />
-              ))}
-          </div>
-        </Form>
-
-        <DialogFooter>
-          <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={mutation.isPending}>
-            Cancel
-          </Button>
-          <Button
-            type="button"
-            disabled={mutation.isPending}
-            onClick={form.handleSubmit((values) => mutation.mutate(values))}
-          >
-            {mutation.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-            {mutation.isPending ? "Saving…" : "Save Changes"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
   )
 }
